@@ -4,13 +4,13 @@
  Powered by fenglinglu.
 
 */
-#include <iostream>
-#include <fstream>
+#include <iostream>//标准输入输出函数库 
+#include <fstream>//文件输入输出库 
 #include <sstream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <cmath>
+#include <string>//字符串库 
+#include <vector>//容器 
+#include <algorithm>// 不明白 
+#include <cmath>//数学函数 
 #include <map>
 #include "ID3.h"
 using namespace std;
@@ -44,7 +44,7 @@ vector<string> att_val(const string &att,const My_Data &data)
     }
     return val;
 }
-My_Data read_data(const string &fname)
+My_Data read_data(const string &fname)//读取文件函数 
 {
     My_Data my_data;
     ifstream data_file;
