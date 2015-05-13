@@ -1,0 +1,1024 @@
+1.00①  试设计一算法，
+判断元素与集合之间的关系。
+Boolean IsInSet(SetElem elem, pSet pA){
+  //Add your code here
+    SetElem *pAElems;    
+    for(pAElems=outToBuffer(pA);*pAElems!='\n';pAElems++)
+        if(elem==*pAElems) return true;
+    return false;
+}
+
+1.01③  试设计一算法，
+实现集合的并运算。
+pSet SetUnion(pSet pA, pSet pB) {
+    pSet pS;
+    pS=createNullSet();
+    SetElem *pBElems;
+    SetElem *pAElems;
+    for(pAElems=outToBuffer(pA);*pAElems!='\n';pAElems++)
+    directInsertSetElem(pS,*pAElems);
+    for(pBElems=outToBuffer(pB);*pBElems!='\n';pBElems++)
+    if(!isInSet(pA,*pBElems)) 
+        directInsertSetElem(pS,*pBElems);
+    return pS;
+}
+
+1.02②  试设计一算法，
+实现集合的交运算。
+pSet SetIntersection(pSet pA, pSet pB){
+    pSet pS;
+    pS=createNullSet();
+    SetElem *pBElems;
+    for(pBElems=outToBuffer(pB);*pBElems!='\n';pBElems++)
+        if(isInSet(pA,*pBElems))
+            directInsertSetElem(pS,*pBElems);
+    return pS;
+}
+
+1.03②  试设计一算法，
+实现集合的差运算。
+pSet SetSubtraction(pSet pA, pSet pB){
+   pSet pS;
+   pS=createNullSet();
+   SetElem *pAElems;
+   for(pAElems=outToBuffer(pA);*pAElems!='\n';pAElems++)
+        if(!isInSet(pB,*pAElems))
+            directInsertSetElem(pS,*pAElems);
+   return pS;
+}
+
+1.04②  试设计一算法，
+实现集合的求补集运算。
+pSet SetComplement(pSet pA, pSet pI){
+    pSet pS;
+    pS=createNullSet();
+    SetElem *pAElems;
+    SetElem *pIElems;    
+    for(pAElems=outToBuffer(pA);*pAElems!='\n';pAElems++)//PA不是PI的子集的情况判断
+        if(!isInSet(pI,*pAElems))            
+            {return NULL;break;}
+    for(pIElems=outToBuffer(pI);*pIElems!='\n';pIElems++)
+         if(!(isInSet(pA,*pIElems)))
+            directInsertSetElem(pS,*pIElems);        
+    return pS;
+}
+
+1.05②  试设计一算法，
+实现集合的对称差运算。
+pSet SetSysmmetricDifference(pSet pA, pSet pB){
+  //Add your code here
+    pSet pS;
+    pS=createNullSet();
+    SetElem *pAElems;
+    SetElem *pBElems;
+    for(pAElems=outToBuffer(pA);*pAElems!='\n';pAElems++)
+        if(!isInSet(pB,*pAElems))
+            directInsertSetElem(pS,*pAElems);
+    for(pBElems=outToBuffer(pB);*pBElems!='\n';pBElems++)
+        if(!isInSet(pA,*pBElems))
+            directInsertSetElem(pS,*pBElems);
+    return pS;
+}
+
+1.05③  试设计一算法，
+判断两个集合之间的包含关系。
+SetRelationshipStatus SetRelationship(pSet pA, pSet pB) {
+  //Add your code here
+   pSet pS;
+   pS=createNullSet();
+   SetElem *pAElems;
+   SetElem *pBElems;
+   pAElems=outToBuffer(pA);
+   pBElems=outToBuffer(pB);
+   pS=pB;//假定pS为pB的相等集合
+   if(isNullSet(pA)&&!isNullSet(pB))//pA为空集，pB不为空集时
+       return  REALINCLUDED;
+   if(!isNullSet(pA)&&isNullSet(pB))//pB为空集，pA不为空集时
+       return REALINCLUDING;
+   if(isNullSet(pA)&&isNullSet(pB))//pA,PB都为空集时
+       return EQUAL;
+   if(!isNullSet(pA)&&!isNullSet(pB))//pA,PB都不为空集时
+    {   while(*pAElems!='\n')
+        {
+           if(isInSet(pS,*pAElems))
+                 pAElems++;
+           else
+              {
+                while(*pBElems!='\n')
+                    {
+                        if(isInSet(pA,*pBElems))
+                            pBElems++;
+                        else
+                            return NOT_INCLUSIVE;//若集合pB中有一个元素不属于pB
+                        if(*pBElems=='\n')
+                            return REALINCLUDING;//若集合pB中的所有元素已遍历完
+                    }
+              }
+        }
+        if(*pAElems=='\n')
+            {
+                while(*pBElems!='\n')
+                if(isInSet(pA,*pBElems))
+                    pBElems++;
+                else
+                    return REALINCLUDED;//若集合pB中有一个元素不属于pA
+                if(*pBElems=='\n')//若集合pB元素已遍历完
+                    return EQUAL;
+            }
+    }
+}
+1.07⑤  试设计一个非递归算法，
+实现集合的求幂集运算。
+pSet miji(pSet pB,pSet pC)
+ {
+    SetElem *pBElems;
+    SetElem *pCElems;
+    pSet pS;
+    pS=createNullSet();    
+    for(pBElems=outToBuffer(pB);*pBElems!='\n';pBElems++)
+        directInsertSetElem(pS,*pBElems);
+    for(pCElems=outToBuffer(pC);*pCElems!='\n';pCElems++)
+        if(!isInSet(pB,*pCElems))
+            directInsertSetElem(pS,*pCElems);
+    return pS;
+ }
+ 
+pFamilyOfSet PowerSet(pSet pA){
+  //Add your code here
+    int i;
+    pSet pI=createNullSet();
+    pFamilyOfSet pF=createNullFamilyOfSet();
+    SetElem *pAElems=outToBuffer(pA);
+    insertToFamilyOfSet(pF,pI);
+    if(!isNullSet(pA))//pA不为空集时
+        while(*pAElems!='\n')
+            {
+                pSet pK=createNullSet();
+                directInsertSetElem(pK,*pAElems);
+                pSet *pS=outFamilyOfSetToBuffer(pF);
+                for(i=0;*(pS+i)!=NULL;i++)
+                insertToFamilyOfSet(pF,miji(pK,*(pS+i)));
+                pAElems++;
+            }
+    return pF;
+}
+
+1.08④  试设计一个递归算法，
+实现集合的求幂集运算。
+void myFunction(long k, SetElem *pAElems,pFamilyOfSet pFamSetA,pSet pB)
+{           
+    long i=k,j=0;    
+    pB=createNullSet();
+    while(*(pAElems+j)!='\n')
+     {     
+       if(i%2==1)   //表示二进制最后一位是1
+            directInsertSetElem(pB,*(pAElems+j));//执行插入步骤
+       j++;
+       i>>=1;
+     }
+     insertToFamilyOfSet(pFamSetA,pB);  //把集合加入到集族
+     k--;//插入一个集合到集族后，对应k的值（即剩下的未插入集族的个数）减去一
+     if(k>=0)   //2～n-1个子集
+     myFunction(k,pAElems,pFamSetA,pB);
+}
+
+pFamilyOfSet PowerSet(pSet pA){
+  //Add your code here
+    pFamilyOfSet pFamSetA=createNullFamilyOfSet();
+    long i,k=1;//设置循环变量 i
+    SetElem *pAElems=outToBuffer(pA); 
+    pSet pB=createNullSet();
+    for(i=0;*(pAElems+i)!='\n';)//利用循环得出集合pA的个数
+        i++;//不可将i放到for语句中，否则当pA为空集时，i的值不为零
+    k<<=i;//k利用左移位运算表示集合pA集族的个数 k=2^i
+    myFunction(k,pAElems,pFamSetA,pB);
+    return pFamSetA;
+}
+
+3.01⑤  试设计一个非递归算法，
+验证一个表达式是不是命题公式(statement formula)。
+Boolean IsStatementFormula(pStatementFormula pFormula){
+  //Add your code here
+    StatementFormulaSymbles preS,currS,nextS;
+    int leftNum = 0,rightNum = 0;
+    preS = getCurrentSymbleType(pFormula);
+    switch(preS)
+        {
+            case Exception:return false;//若取得了公式外的字符，则不是合法的命题公式
+            case Conjunction:return false;
+            case Disjunction:return false;
+            case Implication:return false;
+            case Equivalence:return false;
+            case LeftParenthesis:leftNum++;break;//若为左括号，则leftNum的值自增一
+            case RightParenthesis:return false;
+            case EndOfFormula:return true;//若命题公式只有结束符号‘#’，则为合法的命题公式
+        }
+    nextPos(pFormula);//指示器指向下一个字符
+    currS = getCurrentSymbleType(pFormula);
+    switch(currS)
+        {  
+            case LeftParenthesis:leftNum++;break;//若为左括号，则leftNum的值自增一
+            case RightParenthesis:rightNum++;break;//若为有括号，则RightNum的值自增一
+            case PropositionalVariable:
+            if(preS == PropositionalVariable)//当currS为命题变元时，若preS也为命题变元
+                return false;
+        }
+    while (nextS != EndOfFormula)
+        {
+            nextPos(pFormula);
+            nextS = getCurrentSymbleType(pFormula);
+            if(nextS == LeftParenthesis)//若为左括号，则leftNum的值自增一
+                leftNum++;
+            if(nextS == RightParenthesis)//若为有括号，则RightNum的值自增一
+                rightNum++;
+            if(preS == Exception||currS == Exception||nextS == Exception)//若读取到一个公式歪的字符，则为不合法的命题公式
+                return false;
+            if(currS == PropositionalVariable)//若currS字符为命题变元
+            if(nextS == PropositionalVariable||preS == PropositionalVariable)//且nextS或者preS也为命题变元时，则为不合法的命题公式
+                return false;
+            if(currS == Conjunction||currS == Disjunction||currS == Implication||currS == Equivalence)//若currS为联结词
+            if((preS != PropositionalVariable && preS != RightParenthesis) || (nextS != PropositionalVariable && nextS != LeftParenthesis && nextS != Negation))//前后字符既不为命题变元，也不相应为右，左括号 ，并且后一个字符不为否定号，则为不合法的命题公式
+                return false;
+            if(nextS == Negation)//若nextS为否定号
+            if(currS == PropositionalVariable||currS == RightParenthesis)//且currS为命题变元或者右括号时
+                return false;
+            preS = currS;//为下个字符的判断进行移位
+            currS = nextS;
+        }
+    if(leftNum != rightNum)//若左右括号的数目不相等，则必定为不合法的命题公式
+        return false;
+    return true;
+}
+
+3.02⑤  试设计一个递归算法，
+验证一个表达式是不是命题公式(statement formula)。
+Boolean Function(int leftNum,int rightNum,StatementFormulaSymbles preS,StatementFormulaSymbles currS,StatementFormulaSymbles nextS,pStatementFormula pFormula)
+{
+    nextPos(pFormula);//解释同上题所示
+    nextS = getCurrentSymbleType(pFormula);
+    if(nextS == LeftParenthesis)
+        leftNum++;
+    if(nextS == RightParenthesis)
+        rightNum++;
+    if(preS == Exception||currS == Exception||nextS == Exception)
+        return false;
+    if(currS == PropositionalVariable)
+        if(nextS == PropositionalVariable||preS == PropositionalVariable)
+            return false;
+    if(currS == Conjunction||currS == Disjunction||currS == Implication||currS == Equivalence)
+        if((preS != PropositionalVariable && preS != RightParenthesis) || (nextS != PropositionalVariable && nextS != LeftParenthesis && nextS != Negation))
+            return false;
+    if(nextS == Negation)
+        if(currS == PropositionalVariable||currS == RightParenthesis)
+          return false;
+    preS = currS;
+    currS = nextS;
+    if(nextS != EndOfFormula)
+        {
+            return  Function(leftNum,rightNum,preS,currS,nextS,pFormula);
+        }
+    if(leftNum != rightNum)
+        return false;
+    return true;
+}
+
+Boolean IsStatementFormula(pStatementFormula pFormula){
+  //Add your code here
+    StatementFormulaSymbles preS,currS,nextS;
+    int leftNum = 0,rightNum = 0;
+    preS = getCurrentSymbleType(pFormula);
+    switch(preS)
+        {
+            case Exception:return false;//若取得了公式外的字符，则不是合法的命题公式
+            case Conjunction:return false;
+            case Disjunction:return false;
+            case Implication:return false;
+            case Equivalence:return false;
+            case LeftParenthesis:leftNum++;break;//若为左括号，则leftNum的值自增一
+            case RightParenthesis:return false;
+            case EndOfFormula:return true;//若命题公式只有结束符号‘#’，则为合法的命题公式
+        }                                
+    nextPos(pFormula);//指示器指向下一个字符
+    currS = getCurrentSymbleType(pFormula);
+    switch(currS)
+        {  
+            case LeftParenthesis:leftNum++;break;//若为左括号，则leftNum的值自增一
+            case RightParenthesis:rightNum++;break;//若为有括号，则RightNum的值自增一
+            case PropositionalVariable:
+            if(preS == PropositionalVariable)//当currS为命题变元时，若preS也为命题变元
+                return false;
+        }  
+    return Function(leftNum,rightNum,preS,currS,nextS,pFormula); //返回值的真假，同时调用函数Function
+}
+
+6.01③  试设计一算法，
+实现集合的卡氏积运算。
+pCartersianSet CartesianProduct(pOriginalSet pA, pOriginalSet pB)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);nextOriginalSetPos(pA))    
+        for(resetOriginalSet(pB);!isEndOfOriginalSet(pB);nextOriginalSetPos(pB))   
+            OrderedCoupleInsertToCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pB)));    
+    return pC;
+}
+
+6.02②  试设计一算法，
+给定集合A、集合B和集合C，判断集合C是否为A到B的一个二元关系。
+boolean isBinaryRelation(pOriginalSet pA, pOriginalSet pB, pCartersianSet pC)
+{
+    pCartersianSet pD=createNullCartersianSet();    
+    for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);nextOriginalSetPos(pA))    
+    {      
+        for(resetOriginalSet(pB);!isEndOfOriginalSet(pB);nextOriginalSetPos(pB))      
+OrderedCoupleInsertToCartersianSet(pD,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pB)));       
+        }       
+for(getCurrentCartersianSetElem(pC);!isEndOfCartersianSet(pC);nextCartersianSetPos(pC))     
+{         
+    while(!isEndOfCartersianSet(pD))        
+    {  if(getCurrentCartersianSetElem(pD)==getCurrentCartersianSetElem(pC))            
+        nextCartersianSetPos(pD);            
+        else            
+        return false;            
+        }        
+    }          
+if(isEndOfCartersianSet(pC))         
+    return true;
+}
+
+6.03②  试设计一算法，求集合A上的恒等关系。
+pCartersianSet IdentityRelation(pOriginalSet pSet)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    for(resetOriginalSet(pSet);!isEndOfOriginalSet(pSet);nextOriginalSetPos(pSet))   
+        OrderedCoupleInsertToCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pSet),getCurrentOriginalSetElem(pSet)));     
+    return pC;
+}
+
+6.04③  试设计一算法，求两个卡氏积集合的复合运算。
+pCartersianSet CompositeOperation(pCartersianSet pA, pCartersianSet pB)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    for(resetCartersianSet(pA);!isEndOfCartersianSet(pA);nextCartersianSetPos(pA))
+        for(resetCartersianSet(pB);!isEndOfCartersianSet(pB);nextCartersianSetPos(pB))     
+            if(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pA))==getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pB)))
+                OrderedCoupleInsertToCartersianSet(pC,createOrderedCouple(getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pA)),getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pB))));      
+    return pC;
+}
+
+6.05②  试设计一算法，求一个关系的逆运算。
+pCartersianSet InverseOperation(pCartersianSet pA)
+{
+    pCartersianSet pC=createNullCartersianSet();   
+    for(resetCartersianSet(pA);!isEndOfCartersianSet(pA);nextCartersianSetPos(pA))  
+        OrderedCoupleInsertToCartersianSet(pC,createOrderedCouple(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pA)),getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pA))));
+    return pC;
+}
+
+6.06④  试设计一算法，对某集合A上的一个二元关系，求该关系的幂运算。
+pCartersianSet PowOperation(pOriginalSet pA,
+                            pCartersianSet pBinaryRelationR, 
+                            int n)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    if(n==0)
+        for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);nextOriginalSetPos(pA))     
+            OrderedCoupleInsertToCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA)));
+    if(n==1)return pC;
+    pCartersianSet pD=createNullCartersianSet();
+    int i;
+    for(i=2;i<=n;i++)
+        {
+            pD=copyCartersianSet(pC);
+            pC=compositeOperation(pD,pBinaryRelationR);
+        }
+    return pC;
+}
+
+6.07②  试设计一算法，对某集合A上的一个二元关系R，判断R是否具有自反性。
+boolean IsReflexivity(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    if(isNullOriginalSet(pA))
+        return true;
+    else    
+        for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);)
+            if(isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))
+                nextOriginalSetPos(pA); 
+        else
+            break;
+    if(isEndOfOriginalSet(pA))
+        return true;
+    else
+        return false;
+}
+
+6.08②  试设计一算法，对某集合A上的一个二元关系R，判断R是否具有反自反性。
+boolean IsAntiReflexivity(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    if(isNullOriginalSet(pA))
+        return true;
+    else    
+        for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);)
+            if(!isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))
+                nextOriginalSetPos(pA); 
+        else
+            break;
+    if(isEndOfOriginalSet(pA))
+        return true;
+    else
+        return false;
+}
+
+6.09③  试设计一算法，对某集合A上的一个二元关系R，判断R是否具有自反性或者反自反性。
+Reflexivity_Type DetermineReflexivity(pOriginalSet pA,
+                                      pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    if(isNullOriginalSet(pA))//空集既有自反性又有反自反性
+        return REFLEXIVITY_AND_ANTI_REFLEXIVITY;
+    else
+        for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);)
+            if(isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))
+                nextOriginalSetPos(pA); 
+            else
+                break;
+    if(isEndOfOriginalSet(pA))
+        return REFLEXIVITY;
+    else
+         for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);)
+            if(!isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))
+                nextOriginalSetPos(pA);
+            else
+                break;                
+    if(isEndOfOriginalSet(pA))
+        return ANTI_REFLEXIVITY;
+    else
+        return NOT_REFLEXIVITY_AND_NOT_ANTI_REFLEXIVITY;
+}
+
+6.10④  试设计一算法，对某集合A上的一个二元关系R，判断R是否具有对称性或者反对称性。
+boolean IsSymmetry(pCartersianSet pA)//判断是否具有对称性
+{
+    if(!isNullCartersianSet(pA))
+        for(resetCartersianSet(pA);!isEndOfCartersianSet(pA);nextCartersianSetPos(pA))
+            {
+                pOrderedCouple pCouple = createOrderedCouple(
+                                            getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pA)),
+                                            getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pA)));
+                if(!isInCartersianSet(pA,pCouple))
+                    return false;
+            } 
+    return true;
+}
+
+boolean IsAntiSymmetry(pCartersianSet pA)//判断是否具有反自反性
+{
+    if(!isNullCartersianSet(pA))
+        {
+            for(resetCartersianSet(pA);!isEndOfCartersianSet(pA);nextCartersianSetPos(pA))
+                {
+                    pOriginalSetElem pFirstElem = getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pA));
+                    pOriginalSetElem pSecondElem = getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pA));
+                    if(!isEqualOriginalSetElem(pFirstElem,pSecondElem))
+                        {
+                            pOrderedCouple pCouple = createOrderedCouple(pSecondElem,pFirstElem);            
+                            if(isInCartersianSet(pA,pCouple))
+                                return false;            
+                        }
+                }
+        }
+    return true;
+}
+
+Symmetry_Type DetermineSymmetry(pCartersianSet pBinaryRelationR)
+{
+    if(IsSymmetry(pBinaryRelationR))        
+            if(IsAntiSymmetry(pBinaryRelationR))
+                return SYMMETRY_AND_ANTI_SYMMETRY;
+            else 
+                return SYMMETRY;        
+    else 
+        if(IsAntiSymmetry(pBinaryRelationR))
+            return ANTI_SYMMETRY;
+        else 
+            return NOT_SYMMETRY_AND_NOT_ANTI_SYMMETRY;     
+}
+
+6.11④  试设计一算法，对某集合A上的一个二元关系R，判断R是否具有传递性。
+boolean IsTransitive(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pR = createNullCartersianSet();
+    if(!isNullCartersianSet(pBinaryRelationR))
+        {
+            for(resetCartersianSet(pBinaryRelationR);!isEndOfCartersianSet(pBinaryRelationR);nextCartersianSetPos(pBinaryRelationR))
+                OrderedCoupleInsertToCartersianSet(pR,getCurrentCartersianSetElem(pBinaryRelationR));    
+            for(resetCartersianSet(pBinaryRelationR);!isEndOfCartersianSet(pBinaryRelationR);nextCartersianSetPos(pBinaryRelationR))
+                {
+                    pOrderedCouple pC1 = getCurrentCartersianSetElem(pBinaryRelationR);
+                    for(resetCartersianSet(pR);!isEndOfCartersianSet(pR);nextCartersianSetPos(pR))
+                        {
+                            pOrderedCouple pC2 = getCurrentCartersianSetElem(pR);
+                            if(isEqualOriginalSetElem(getSecondElemOfOrderedCouple(pC1),getFirstElemOfOrderedCouple(pC2)))
+                                if(!isInCartersianSet(pBinaryRelationR,createOrderedCouple(getFirstElemOfOrderedCouple(pC1),getSecondElemOfOrderedCouple(pC2))))
+                                    return false;            
+                        }
+                }
+        }
+    return true;
+}
+
+6.12③  试设计一算法，对某集合A上的一个二元关系R，求R的自反闭包。
+pCartersianSet ReflexiveClosure(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    pCartersianSet pD=createNullCartersianSet();
+    pD=copyCartersianSet(pBinaryRelationR);
+    if(isNullCartersianSet(pC))//若卡式积集合为空集
+        for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);nextOriginalSetPos(pA))
+            OrderedCoupleInsertToCartersianSet(pD,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA)));
+    else   
+        for(resetOriginalSet(pA);!isEndOfOriginalSet(pA);nextOriginalSetPos(pA))         
+            for(resetCartersianSet(pC);!isEndOfCartersianSet(pC); nextCartersianSetPos(pC))             
+                if(!isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))//若没有该序偶，则插入到pD集合中
+                    OrderedCoupleInsertToCartersianSet(pD,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA)));                 
+    return pD;
+}
+
+6.13③  试设计一算法，对某集合A上的一个二元关系R，求R的对称闭包。
+        在实际计算中，无需给出集合A。
+pCartersianSet SymmetricClosure(pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();              
+    pC=copyCartersianSet(pBinaryRelationR);
+    pCartersianSet pD=createNullCartersianSet();
+    pD=copyCartersianSet(pBinaryRelationR);
+    for(resetCartersianSet(pC);!isEndOfCartersianSet(pC); nextCartersianSetPos(pC))     
+        if(!isInCartersianSet(pC,createOrderedCouple(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC)))))
+            OrderedCoupleInsertToCartersianSet(pD,createOrderedCouple(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC))));      
+    return pD;
+}
+
+6.14⑤  试设计一算法，对某集合A上的一个二元关系R，求R的传递闭包。
+pCartersianSet TransitiveClosure(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();              
+    pC=copyCartersianSet(pBinaryRelationR);
+    pCartersianSet pD=createNullCartersianSet();
+    pD=copyCartersianSet(pBinaryRelationR);
+    pCartersianSet pN=createNullCartersianSet();
+    pN=copyCartersianSet(pBinaryRelationR);
+    for(resetCartersianSet(pC);!isEndOfCartersianSet(pC);nextCartersianSetPos(pC))
+        for(resetCartersianSet(pD);!isEndOfCartersianSet(pD);nextCartersianSetPos(pD))
+            if(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pC))==getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pD)))
+                if(!isInCartersianSet(pC,createOrderedCouple(getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pD)))))
+                    OrderedCoupleInsertToCartersianSet(pN,createOrderedCouple(getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pD))));
+    return pN;
+}
+
+6.15③  实现Warshall算法，求某关系的传递闭包。
+pMatrix Warshall(pMatrix pM)//矩阵为转置矩阵
+{
+    int n,i,j,k,m;
+    n=getDim(pM);//获取矩阵维数
+    pMatrixBase pBase;//定义缓冲区
+    pBase=outToBuffer(pM);//输出矩阵中的元素到pBase
+    for(m=0;m<2;m++)
+        for(i=0;i<n;i++)
+            for(j=0;j<n;j++)
+                if(!converToInt(*(pBase+n*i+j)))//当序偶<i,j>不属于集合A，即pM对应矩阵元素为0
+                    for(k=0;k<n;k++)                            
+                        if(converToInt(*(pBase+n*i+k)))//若存在序偶<i,k>,<k,j>都为一，即都属于集合A时
+                            if(converToInt(*(pBase+n*k+j)))
+                                putValue(pBase+n*i+j,1);//则序偶<i，j>属于集合A，pM对应矩阵元素为1
+    pM=createMatrix(pBase,n);//创建打印矩阵
+    return pM;//返回传递包的关系矩阵
+}
+
+7.01③  试设计一算法，对某集合A上的一个二元关系R，判断R是否为等价关系。
+boolean isEquivalentRelation(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    for(resetOriginalSet(pA);!isEndOfOriginalSet(pA); nextOriginalSetPos(pA))        
+            if(!isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))
+                return false;        
+    for(resetCartersianSet(pC);!isEndOfCartersianSet(pC);nextCartersianSetPos(pC))        
+            for(resetCartersianSet(pBinaryRelationR);!isEndOfCartersianSet(pBinaryRelationR);nextCartersianSetPos(pBinaryRelationR))                 
+                   if(!isInCartersianSet(pC,createOrderedCouple(getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pBinaryRelationR)))))
+                        return false;                            
+    if(isEndOfOriginalSet(pC))
+        return true;
+}
+
+7.02⑤  试设计一算法，对某集合A上的一个二元关系R，求商集A/R。
+pCompoundSet QuotientSet(pOriginalSet pSetA, pCartersianSet pBinaryRelationR)
+{
+    pOriginalSet pM=createNullCompoundSet();
+    if(isNullCartersianSet(pBinaryRelationR))
+        return pM;
+    for(resetOriginalSet(pSetA);!isEndOfOriginalSet(pSetA);nextOriginalSetPos(pSetA))
+        {
+            pOriginalSet  pB=createNullOriginalSet();
+            for(resetCartersianSet(pBinaryRelationR);!isEndOfCartersianSet(pBinaryRelationR);nextCartersianSetPos(pBinaryRelationR) )         
+                if(isEqualOriginalSetElem(getCurrentOriginalSetElem(pSetA),getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pBinaryRelationR))))
+                    elemInsertToOriginalSet(pB,getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pBinaryRelationR)));             
+            originalSetInsertToCompoundSet(pM,pB);
+        }
+     return pM;
+}
+
+7.03⑤  试设计一算法，求某集合A上的模n同余关系。
+pCartersianSet CongruenceRelation(pOriginalSet pSet, int n)
+{
+    int i,j;
+    pOriginalSet pA=createNullOriginalSet();
+    pA=copyOriginalSet(pSet);
+    pCartersianSet pC=createNullCartersianSet();
+    for(resetOriginalSet(pA);!isEndOfOriginalSet(pA); nextOriginalSetPos(pA))
+        {  
+            for(resetOriginalSet(pSet);!isEndOfOriginalSet(pSet); nextOriginalSetPos(pSet))
+                {
+                    i=originalSetElemToInt(getCurrentOriginalSetElem(pA));
+                    j=originalSetElemToInt(getCurrentOriginalSetElem(pSet));
+                    if((i-j)%n==0)
+                    OrderedCoupleInsertToCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pSet)));
+                }
+        }
+  return pC;
+}
+7.04③  试设计一算法，对某集合A上的一个二元关系R，判断R是否为偏序关系。
+boolean isPartialOrderRelation(pOriginalSet pA, pCartersianSet pBinaryRelationR)
+{
+    pCartersianSet pC=createNullCartersianSet();
+    pC=copyCartersianSet(pBinaryRelationR);
+    for(resetOriginalSet(pA);!isEndOfOriginalSet(pA); nextOriginalSetPos(pA))//判断是否具有自反性    
+        if(!isInCartersianSet(pC,createOrderedCouple(getCurrentOriginalSetElem(pA),getCurrentOriginalSetElem(pA))))
+            return false;      
+    for(resetCartersianSet(pC);!isEndOfCartersianSet(pC);nextCartersianSetPos(pC))//判断是否具有传递性           
+        for(resetCartersianSet(pBinaryRelationR);!isEndOfCartersianSet(pBinaryRelationR);nextCartersianSetPos(pBinaryRelationR))                
+            if(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pC))==getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pBinaryRelationR)))                   
+                if(!isInCartersianSet(pC,createOrderedCouple(getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pBinaryRelationR)))))
+                    return false;                                  
+    for(resetCartersianSet(pC);!isEndOfCartersianSet(pC);nextCartersianSetPos(pC))//判断是否具有反对称性
+        if(getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC))!=getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pC)))
+            if(isInCartersianSet(pC,createOrderedCouple(getSecondElemOfOrderedCouple(getCurrentCartersianSetElem(pC)),getFirstElemOfOrderedCouple(getCurrentCartersianSetElem(pC)))))
+                return false;//如果有一组<x,y>对应的有<y,x>也在集合pC里面，则不具有反对称性
+    return true;
+}
+
+8.01④  试设计一算法，对于一个从集合A到集合B的二元关系R，判断R是否为函数。
+  boolean IsSet(pOriginalSet pSetA,pOriginalSetElem pE)//判断元素是否已经在集合内
+{        resetOriginalSet( pSetA);
+           pOriginalSetElem p;
+          while (!isEndOfOriginalSet(pSetA) )
+         {    p=getCurrentOriginalSetElem(pSetA);
+             if(  isEqualOriginalSetElem(p, pE) )return  true;
+             nextOriginalSetPos(pSetA);
+         }
+         return false;
+}
+
+boolean isFunction( pOriginalSet pA,
+                    pOriginalSet pB, 
+                    pCartersianSet pR )
+{
+        int i=0,j=0;
+        pOrderedCouple a,b;
+        pOriginalSetElem c,d,c1,d1;
+        pOriginalSetElem g,g1;
+        pOrderedCouple f;
+        resetOriginalSet(pA);
+        pOriginalSet  pf= createNullOriginalSet() ;
+        resetCartersianSet( pR);
+        while( !isEndOfCartersianSet(pR) )//判断关系pR中序偶第一个元素是否在集合pA内
+            {
+                b=getCurrentCartersianSetElem(pR);
+                d=getFirstElemOfOrderedCouple(b) ;
+                if(IsSet(pf,d)){i=1;  break; }
+                else
+               elemInsertToOriginalSet(pf, d);
+               nextCartersianSetPos(pR);
+            }
+        if(i==1)return  false;
+        while(!isEndOfOriginalSet(pA) )
+            {  
+                g= getCurrentOriginalSetElem(pA)  ;
+                i=0;
+                j=0; 
+                resetCartersianSet( pR);
+                while( !isEndOfCartersianSet(pR) )
+                    {      
+                        b=getCurrentCartersianSetElem(pR);
+                        d=getFirstElemOfOrderedCouple(b) ;
+                        d1=getSecondElemOfOrderedCouple(b) ;
+                        if((!IsSet(pA,d)&&!IsSet(pB,d))||(!IsSet(pA,d1)&&!IsSet(pB,d1)))return  false;//若关系pR内的序偶元素均不在集合pA、pB内时
+                        if(isEqualOriginalSetElem(g, d) )//当序偶第一个元素在集合pA时
+                            {  
+                                j=1;
+                                i++;
+                                if(i==2)return false;
+                                resetOriginalSet(pB);
+                                while(!isEndOfOriginalSet(pB) )
+                                    {  
+                                        g1= getCurrentOriginalSetElem(pB)  ;
+                                        if( isEqualOriginalSetElem(g1, d1) ){break;}
+                                        nextOriginalSetPos( pB);
+                                    }
+                                if(isEndOfOriginalSet(pB)) return false;
+                            }
+                        nextCartersianSetPos(pR);
+                    }
+                nextOriginalSetPos( pA);
+                if(j==0)return  false;
+                if(i!=1)return  false;
+            }    
+      return true;
+}
+
+8.02③  判断一个关系是否为函数，如果是函数，则是什么类型：单射、满射、双射、
+        变换、非单射非满射。
+boolean IsCompoundSet(pOriginalSet pC ,pOriginalSet pO)
+{     int i=0,j=0,k=0,h=0;                                
+       resetOriginalSet(pC);
+      resetOriginalSet(pO);    
+      pOriginalSetElem pa,pb;
+       while (!isEndOfOriginalSet(pO) ){h++ ; nextOriginalSetPos(pO) ;}          
+         resetOriginalSet(pC);
+        while(  !isEndOfOriginalSet(pC))
+        {
+        k++;
+        i=0;
+        pa= getCurrentOriginalSetElem(pC);
+           resetOriginalSet(pO);
+            while (!isEndOfOriginalSet(pO) )
+            {  
+            pb= getCurrentOriginalSetElem(pO);
+            if( isEqualOriginalSetElem(pa, pb)){i=1;break;}
+            nextOriginalSetPos(pO);
+            }  
+            if(i==0)break;
+           nextOriginalSetPos(pC);
+        }
+        if(i==1&&h==k)return  true;      
+     return false;
+}
+boolean IsSet(pOriginalSet pSetA,pOriginalSetElem pE)
+{        resetOriginalSet( pSetA);
+           pOriginalSetElem p;
+          while (!isEndOfOriginalSet(pSetA) )
+         {    p=getCurrentOriginalSetElem(pSetA);
+             if(  isEqualOriginalSetElem(p, pE) )return  true;
+             nextOriginalSetPos(pSetA);
+         }
+         return false;
+}
+boolean isFunction( pOriginalSet pA,
+                    pOriginalSet pB, 
+                    pCartersianSet pR )
+{
+        int i=0,j=0,k;
+        pOrderedCouple a,b;
+        pOriginalSetElem c,d,c1,d1;
+        pOriginalSetElem g,g1;
+        pOrderedCouple f;
+        resetOriginalSet(pA);
+        pOriginalSet  pf= createNullOriginalSet() ;
+        resetCartersianSet( pR);
+        while( !isEndOfCartersianSet(pR) )//判断关系pR中序偶第一个元素是否在集合pA内
+            {
+                b=getCurrentCartersianSetElem(pR);
+                d=getFirstElemOfOrderedCouple(b) ;
+                if(IsSet(pf,d)){i=1;  break; }
+                else
+               elemInsertToOriginalSet(pf, d);
+               nextCartersianSetPos(pR);
+            }
+        if(i==1)return  false;
+        resetOriginalSet( pA);
+        while( !isEndOfOriginalSet(pA) )
+            {
+                g1= getCurrentOriginalSetElem(pA);
+                if(!IsSet(pf,g1)){break;return false;}
+                nextOriginalSetPos( pA);
+            }
+        while(!isEndOfOriginalSet(pA) )
+            {  
+                g= getCurrentOriginalSetElem(pA)  ;
+                i=0;
+                j=0; 
+                resetCartersianSet( pR);
+                while( !isEndOfCartersianSet(pR) )
+                    {      
+                        b=getCurrentCartersianSetElem(pR);
+                        d=getFirstElemOfOrderedCouple(b) ;
+                        d1=getSecondElemOfOrderedCouple(b) ;
+                        if((!IsSet(pA,d)&&!IsSet(pB,d))||(!IsSet(pA,d1)&&!IsSet(pB,d1)))return  false;//若关系pR内的序偶元素均不在集合pA、pB内时
+                        if(isEqualOriginalSetElem(g, d) )//当序偶第一个元素在集合pA时
+                            {  
+                                j=1;
+                                i++;
+                                if(i==2)return false;
+                                resetOriginalSet(pB);
+                                while(!isEndOfOriginalSet(pB) )
+                                    {  
+                                        g1= getCurrentOriginalSetElem(pB)  ;
+                                        if( isEqualOriginalSetElem(g1, d1) ){break;}
+                                        nextOriginalSetPos( pB);
+                                    }
+                                if(isEndOfOriginalSet(pB)) return false;
+                            }
+                        nextCartersianSetPos(pR);
+                    }
+                nextOriginalSetPos( pA);
+                if(j==0)return  false;
+                if(i!=1)return  false;
+            }    
+      return true;
+}
+
+Function_Type functionKind( pOriginalSet pA,
+                            pOriginalSet pB, 
+                            pCartersianSet pR )
+{
+         if(isNullCartersianSet(pR)&&isNullOriginalSet(pA)&&isNullOriginalSet(pB)) return TRANSFORM;
+          if(!isFunction(pA,pB,pR))return   NOT_FUNTION;
+             pOrderedCouple a,b;
+         pOriginalSetElem c,d,c1,d1;
+        pOriginalSetElem g,g1;
+        pOrderedCouple f;
+             resetOriginalSet( pA);
+             int i=1,j=0,k=0,h=0;
+           pOriginalSetElem p;
+            pOriginalSet  pf= createNullOriginalSet() ;
+           
+     
+             resetCartersianSet( pR);
+           while( !isEndOfCartersianSet(pR) )
+          {      b=getCurrentCartersianSetElem(pR);
+                d=getSecondElemOfOrderedCouple(b) ;
+                if(IsSet(pf,d)){i=0;  }
+                else
+               elemInsertToOriginalSet(pf, d);
+               nextCartersianSetPos(pR);
+           }
+       
+         if(IsCompoundSet( pf,pB)) {j=1; }
+         if(i!=1&&j!=1)return  COMMON_FUNCTION;
+         if(i==1&&j==1){k=1; }
+           resetOriginalSet( pA);
+             resetOriginalSet( pB);
+         if(IsCompoundSet( pA,pB)&&k==1)h=1;
+         if(i==1&&j!=1)return INJECTIVE;
+         if(j==1&&i!=1)return   SURJECTIVE  ;
+         if(k==1&&!IsCompoundSet( pA,pB))return  BIJECTIVE;
+         if(h==1)return   TRANSFORM;
+         
+
+}
+
+8.03②  判断一个关系是否为函数，如果是函数并且该函数存在逆函数，则求出其逆函数。
+boolean IsCompoundSet(pOriginalSet pC ,pOriginalSet pO)
+{     int i=0,j=0,k=0,h=0;                                
+       resetOriginalSet(pC);
+      resetOriginalSet(pO);    
+      pOriginalSetElem pa,pb;
+       while (!isEndOfOriginalSet(pO) ){h++ ; nextOriginalSetPos(pO) ;}          
+         resetOriginalSet(pC);
+        while(  !isEndOfOriginalSet(pC))
+        {
+        k++;
+        i=0;
+        pa= getCurrentOriginalSetElem(pC);
+           resetOriginalSet(pO);
+            while (!isEndOfOriginalSet(pO) )
+            {  
+            pb= getCurrentOriginalSetElem(pO);
+            if( isEqualOriginalSetElem(pa, pb)){i=1;break;}
+            nextOriginalSetPos(pO);
+            }  
+            if(i==0)break;
+           nextOriginalSetPos(pC);
+        }
+        if(i==1&&h==k)return  true;      
+     return false;
+}
+boolean IsSet(pOriginalSet pSetA,pOriginalSetElem pE)
+{        resetOriginalSet( pSetA);
+           pOriginalSetElem p;
+          while (!isEndOfOriginalSet(pSetA) )
+         {    p=getCurrentOriginalSetElem(pSetA);
+             if(  isEqualOriginalSetElem(p, pE) )return  true;
+             nextOriginalSetPos(pSetA);
+         }
+         return false;
+}
+boolean isFunction( pOriginalSet pA,
+                    pOriginalSet pB, 
+                    pCartersianSet pR )
+{       int i=0,j=0;      
+         pOrderedCouple a,b;
+         pOriginalSetElem c,d,c1,d1;
+        pOriginalSetElem g,g1;
+        pOrderedCouple f;
+           resetOriginalSet(pA);
+             pOriginalSet  pf= createNullOriginalSet() ;
+             resetCartersianSet( pR);
+           while( !isEndOfCartersianSet(pR) )
+          {      b=getCurrentCartersianSetElem(pR);
+                d=getFirstElemOfOrderedCouple(b) ;
+                if(IsSet(pf,d)){i=1;  break; }
+                else
+               elemInsertToOriginalSet(pf, d);
+               nextCartersianSetPos(pR);
+           }
+           if(i==1)return  false;
+        while(!isEndOfOriginalSet(pA) )
+        {  g= getCurrentOriginalSetElem(pA)  ;
+               i=0;
+               j=0; 
+                resetCartersianSet( pR);
+           while( !isEndOfCartersianSet(pR) )
+          {      b=getCurrentCartersianSetElem(pR);
+                d=getFirstElemOfOrderedCouple(b) ;
+                d1=getSecondElemOfOrderedCouple(b) ;
+                if((!IsSet(pA,d)&&!IsSet(pB,d))||(!IsSet(pA,d1)&&!IsSet(pB,d1)))return  false;
+                if(isEqualOriginalSetElem(g, d) )
+                {  
+　　j=1;
+                   	i++;
+                   	if(i==2)return false;
+                 	resetOriginalSet(pB);
+               		while(!isEndOfOriginalSet(pB) )
+                	{ 
+　　g1= getCurrentOriginalSetElem(pB)  ;
+               			if( isEqualOriginalSetElem(g1, d1) ){break;}
+                		nextOriginalSetPos( pB);
+                	}
+                } 
+              nextCartersianSetPos(pR);
+          }
+           nextOriginalSetPos( pA);
+           if(j==0)return  false;
+         if(i!=1)return  false;
+        }    
+      return true;   
+}
+boolean functionKind( pOriginalSet pA,
+                            pOriginalSet pB, 
+                            pCartersianSet pR )
+{
+          if(!isFunction(pA,pB,pR))return   false ;
+             pOrderedCouple a,b;
+         pOriginalSetElem c,d,c1,d1;
+        pOriginalSetElem g,g1;
+        pOrderedCouple f;
+             resetOriginalSet( pA);
+             int i=1,j=0,k=0,h=0;
+           pOriginalSetElem p;
+            pOriginalSet  pf= createNullOriginalSet() ;
+
+             resetCartersianSet( pR);
+           while( !isEndOfCartersianSet(pR) )
+          {      b=getCurrentCartersianSetElem(pR);
+                d=getSecondElemOfOrderedCouple(b) ;
+                if(IsSet(pf,d)){i=0;  }
+                else
+               elemInsertToOriginalSet(pf, d);
+               nextCartersianSetPos(pR);
+           }
+       
+         if(IsCompoundSet( pf,pB)) {j=1; }       
+         if(i==1&&j==1)
+         return true;
+}
+
+pCartersianSet inverseFunction( pOriginalSet pA,
+                                pOriginalSet pB, 
+                                pCartersianSet pR )
+{         
+        if(isNullCartersianSet(pR)&&isNullOriginalSet(pA)&&isNullOriginalSet(pB)) return  pR;
+         if(!functionKind( pA, pB, pR ))return  NULL;
+          pOrderedCouple pa;
+      pCartersianSet pf=createNullCartersianSet() ;
+       pOrderedCouple a,b;
+         pOriginalSetElem c,d,c1,d1;
+        pOriginalSetElem g,g1;
+        pOrderedCouple f;
+           resetOriginalSet(pA);
+                resetCartersianSet( pR);
+           while( !isEndOfCartersianSet(pR) )
+               {      b=getCurrentCartersianSetElem(pR);
+                d=getFirstElemOfOrderedCouple(b) ;
+                d1=getSecondElemOfOrderedCouple(b) ;                               
+                pa=createOrderedCouple(d1, d) ;
+                OrderedCoupleInsertToCartersianSet(pf, pa);              
+               nextCartersianSetPos(pR);
+               }            
+              return  pf;
+}
