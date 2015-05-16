@@ -95,8 +95,9 @@ void inputDrillSample(void)
 	for(int i=0;i<number;i++)//数据录入到内存中,并建立链表 
 	{
 		printf("现在输入的是第 %d 份数据:\n",i+1);
-		printf("编号：");
-		scanf("%d",&sample[i].sample.number); 
+//		printf("编号：");
+//		scanf("%d",&sample[i].sample.number); 
+		sample[i].sample.number=i+1;
 		printf("天气(Sunny\\Overcast\\Rain)：");
 		scanf("%s",sample[i].sample.outlook);
 		printf("温度(Hot\\Mild\\Cool)：");
@@ -153,8 +154,9 @@ void inputTestSample(void)
 	for(int i=0;i<number;i++)//数据录入到内存中,并建立链表 
 	{
 		printf("现在输入的是第 %d 份数据:\n",i+1);
-		printf("编号：");
-		scanf("%d",&sample[i].sample.number); 
+//		printf("编号：");
+//		scanf("%d",&sample[i].sample.number); 
+		sample[i].sample.number=i+1;
 		printf("天气(Sunny\\Overcast\\Rain)：");
 		scanf("%s",sample[i].sample.outlook);
 		printf("温度(Hot\\Mild\\Cool)：");
