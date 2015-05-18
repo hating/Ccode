@@ -35,11 +35,8 @@ int main(void)
 #endif
     srand((unsigned int)time(NULL));
     get_datas_from_file(DATA_FILE, &examples, &n_ex, &attributes_set, &n_attr_set);
-#ifdef C45
-    tree = build_C45_tree(examples, n_ex, attributes_set, n_attr_set);
-#else
+
     tree = build_ID3_tree(examples, n_ex, attributes_set, n_attr_set);
-#endif
     printf("Tree is built and its size is %d.\n", get_tree_size(tree));
     display_tree(tree);
 #ifdef LOG

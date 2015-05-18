@@ -2,6 +2,88 @@
 #include <stdlib.h>
 #include <string.h>
 #include "id3.h"
+AAA *addNodeAAA(AAA *Ahead,char *s)
+{
+	AAA *node=(AAA *)malloc(sizeof(AAA));
+//Initiliation
+	strcpy(node->att,s);
+	node->Yes=0;
+	node->No=0;
+	node->next=NULL;
+	if(Ahead->next==NULL)
+	{
+		Ahead->next=node;
+	}
+	else 
+	{
+		AAA *iter=Ahead->next;
+		for(;iter->next!=NULL;iter=iter->next)
+		{
+			;
+		}
+		iter->next=node;
+	}
+	return node;
+}
+AAA *find(char *compare,AAA *source)
+{
+	
+	for(AAA *iterInFind=source;iterInFind!=NULL;iterInFind=iterInFind->next)
+	{
+		if(!strcmp(compare,iterInFind->att))
+		{
+			return iterInFind;
+		}
+	}
+	return NULL;
+}
+
+void ID3(NodeSample *head)
+{
+	AAA Ahead,*Atemp=NULL;
+	
+//Initiliation
+	Ahead.next=NULL;
+	Ahead.Yes=0;
+	Ahead.No=0;
+	strcpy(Ahead.att,"\0");
+
+	for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
+	{
+		if(Atemp=find(iter->sample.outlook,&Ahead))
+		{
+				if(!strcmp(iter->sample.playTennis,"Yes"))
+				{
+					Atemp->Yes++;
+				}
+				if(!strcmp(iter->sample.playTennis,"No"))
+				{
+					Atemp->No++;
+				}
+		}
+		else
+		{
+				Atemp=addNodeAAA(&Ahead,iter->sample.outlook);
+
+				if(!strcmp(iter->sample.playTennis,"Yes"))
+				{
+					Atemp->Yes++;
+				}
+				if(!strcmp(iter->sample.playTennis,"No"))
+				{
+					Atemp->No++;
+				}
+			
+		}
+	}
+//Test the read result
+	for(AAA *iter_print=&Ahead;iter_print!=NULL;iter_print=iter_print->next)
+	{
+		printf("attribute:%s\nYes:%d\nNo:%d\n\n",iter_print->att,iter_print->Yes,iter_print->No);
+	}
+
+}
+
 
 void interface(void)
 {
@@ -38,7 +120,7 @@ void readDrillorTestSample(char *file)
 	NodeSample sample[number/sizeof(head.sample)];
 	if(number/sizeof(head.sample)<=0)
 	{
-		printf("没有从drill.dat找到匹配的数据，程序即将退出。\n");
+		printf("没有从%s找到匹配的数据，程序即将退出。\n",file);
 		exit(1);
 	}
 	head.next=&sample[0];
@@ -47,7 +129,7 @@ void readDrillorTestSample(char *file)
 		sample[i].next=&sample[i+1];
 	}
 	
-	printf("共从drill.dat找到%d份数据。\n\n",number/sizeof(head.sample));
+	printf("共从%s找到%d份数据。\n\n",file,number/sizeof(head.sample));
 
 	NodeSample* iter=head.next;
 	for(int i=0;i<number/sizeof(head.sample);i++)
@@ -125,7 +207,6 @@ void inputDrillSample(void)
 void inputTestSample(void)
 {
 	printf("This is function inputTestSample,it is not yeat completed\n");
-	//Unfinished
 	FILE * fp=NULL ;
 	fp=fopen("test.dat","a+");
 	if(fp==NULL)
@@ -154,8 +235,6 @@ void inputTestSample(void)
 	for(int i=0;i<number;i++)//数据录入到内存中,并建立链表 
 	{
 		printf("现在输入的是第 %d 份数据:\n",i+1);
-//		printf("编号：");
-//		scanf("%d",&sample[i].sample.number); 
 		sample[i].sample.number=i+1;
 		printf("天气(Sunny\\Overcast\\Rain)：");
 		scanf("%s",sample[i].sample.outlook);
@@ -165,8 +244,6 @@ void inputTestSample(void)
 		scanf("%s",sample[i].sample.humidity);
 		printf("风力(Strong\\Weak)：");
 		scanf("%s",sample[i].sample.wind);
-//		printf("是否玩网球(Yes\\No)：");
-//		scanf("%s",sample[i].sample.playTennis);
 		strcpy(sample[i].sample.playTennis,"UNKNOWN");
 		if(i<number-1)
 		{
@@ -184,9 +261,45 @@ void inputTestSample(void)
 	interface();	
 }
 void showRules(void)
+
 {
-	printf("This is function showRules,it is not yeat completed\n");
-	//Unfinished		
+	FILE *stream;
+	stream=fopen("drill.dat","r");
+	if(stream==NULL)
+	{
+		printf("文件未能打开，程序即将退出。\n");
+		exit(1);
+	}
+//获取文件的长度 
+	int number;
+	fseek(stream,0,SEEK_SET);
+	fseek(stream,0,SEEK_END);
+	number=ftell(stream);
+	fseek(stream,0,SEEK_SET);//将文件定位到文件头	
+
+
+	NodeSample head;
+	NodeSample sample[number/sizeof(head.sample)];
+	if(number/sizeof(head.sample)<=0)
+	{
+		printf("没有从drill.dat找到匹配的数据，程序即将退出。\n");
+		exit(1);
+	}
+	head.next=&sample[0];
+	for(int i=0;i<number/sizeof(head.sample)-1;i++)
+	{
+		sample[i].next=&sample[i+1];
+	}
+	
+	printf("共从drill.dat找到%d份数据。\n",number/sizeof(head.sample));
+
+	NodeSample* iter=head.next;
+	for(int i=0;i<number/sizeof(head.sample);i++)
+	{
+		fread(&iter->sample,sizeof(head.sample),1,stream);
+		iter=iter->next;
+	}
+	ID3(&head);
 }
 void showTestResult(void)
 {
@@ -195,8 +308,31 @@ void showTestResult(void)
 }
 void statistics(void)
 {
-	printf("This is function statistics,it is not yeat completed\n");
-	//Unfinished		
+	FILE *stream;
+	stream=fopen("drill.dat","r");
+	if(stream==NULL)
+	{
+		printf("文件未能打开，程序即将退出。\n");
+		exit(1);
+	}
+//获取文件的长度 
+	int number;
+	fseek(stream,0,SEEK_SET);
+	fseek(stream,0,SEEK_END);
+	number=ftell(stream);
+
+	printf("There are %d items in drill.dat.\n",number/sizeof(struct Sample));
+	stream=fopen("test.dat","r");
+	if(stream==NULL)
+	{
+		printf("文件未能打开，程序即将退出。\n");
+		exit(1);
+	}
+	fseek(stream,0,SEEK_SET);
+	fseek(stream,0,SEEK_END);
+	number=ftell(stream);	
+	printf("There are %d items in test.dat.\n",number/sizeof(struct Sample));
+
 }
 void exitProgram(void)
 {
@@ -204,8 +340,7 @@ void exitProgram(void)
 	exit(1);
 }
 
-
-void functionChoose(void)
+int main(int argc, char** argv) 
 {
 loop:
 	interface();
@@ -243,11 +378,5 @@ loop:
 			break;
 	}
 	goto loop;
-}
-
-
-int main(int argc, char** argv) {
-	functionChoose();
-	
 	return 0;
 }

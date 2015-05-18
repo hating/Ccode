@@ -1,6 +1,6 @@
 [Project]
-FileName=id3.dev
-Name=ÏîÄ¿1
+FileName=MyNewID3.dev
+Name=MyNewID3
 Type=1
 Ver=2
 ObjFiles=
@@ -12,7 +12,7 @@ MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=
-IsCpp=1
+IsCpp=0
 Icon=
 ExeOutput=
 ObjectOutput=
@@ -27,9 +27,9 @@ CommandLine=
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=0
-CompilerSettings=0000000000000000001000000
-UnitCount=5
+CompilerSet=4
+CompilerSettings=0000000100000000001000000
+UnitCount=2
 
 [VersionInfo]
 Major=1
@@ -51,8 +51,8 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=..\..\..\zID3-master\datas.h
-CompileCpp=1
+FileName=ID3.c
+CompileCpp=0
 Folder=
 Compile=1
 Link=1
@@ -61,38 +61,8 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=..\..\..\zID3-master\functions.c
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
-FileName=..\..\..\zID3-master\functions.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit4]
-FileName=..\..\..\zID3-master\main.c
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit5]
-FileName=..\..\..\zID3-master\static_prototypes_functions.c.h
-CompileCpp=1
+FileName=ID3.h
+CompileCpp=0
 Folder=
 Compile=1
 Link=1

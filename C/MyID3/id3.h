@@ -1,5 +1,5 @@
-#ifndef id3.h
-#define id3.h
+#ifndef id3_h
+#define id3_h
 #define LENGTH 10
 
 typedef struct Sample {
@@ -13,7 +13,24 @@ typedef struct Sample {
 
 typedef struct NodeSample {
 	Sample sample;
-	NodeSample* next=NULL;
+	NodeSample* next;
 }NodeSample;
+
+typedef struct AAA{
+	char att[LENGTH];
+	int Yes;
+	int No;
+	AAA *next;
+}AAA;
+
+typedef struct Rules{
+	char rule1[LENGTH];
+	char rule2[LENGTH];
+	char rule3[LENGTH];
+	char rule4[LENGTH];
+	char result[LENGTH];
+	Rules *next;
+}Rules;
+
 
 #endif
