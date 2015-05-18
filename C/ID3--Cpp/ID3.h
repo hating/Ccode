@@ -6,8 +6,8 @@
 #include <map>
 struct My_Data
 {
-    std::vector<std::string> attributes; //属性 
-    std::vector< std::vector<std::string> > items;	//物品 
+    std::vector<std::string> attributes; //属性,是一个vector类的容器，可以塞进多个类型 
+    std::vector< std::vector<std::string> > items;	//物品 ，同上 
     int row = 0;//行
     int col = 0;//列
 };
