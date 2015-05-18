@@ -1,7 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "id3.h"
+
+double lg2(double n)
+{
+	double l=log(n)/log(2);
+	if(l<-10000)
+	{
+		l=0;
+	}
+    return l;
+}
+
 AAA *addNodeAAA(AAA *Ahead,char *s)
 {
 	AAA *node=(AAA *)malloc(sizeof(AAA));
@@ -40,52 +52,62 @@ AAA *find(char *compare,AAA *source)
 
 void ID3(NodeSample *head)
 {
-	AAA Ahead,*Atemp=NULL;
+	double 	P_each[4]={0},P_all[4]={0};
+	for(int loop=0;loop<4;loop++)
+	{
+		AAA Ahead,*Atemp=NULL;
+		
+	//Initiation
+		Ahead.next=NULL;
+		Ahead.Yes=0;
+		Ahead.No=0;
+		strcpy(Ahead.att,"\0");
 	
-//Initiliation
-	Ahead.next=NULL;
-	Ahead.Yes=0;
-	Ahead.No=0;
-	strcpy(Ahead.att,"\0");
-
-	for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
-	{
-		if(Atemp=find(iter->sample.outlook,&Ahead))
+		for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
 		{
-				if(!strcmp(iter->sample.playTennis,"Yes"))
-				{
-					Atemp->Yes++;
-				}
-				if(!strcmp(iter->sample.playTennis,"No"))
-				{
-					Atemp->No++;
-				}
+			if(Atemp=find(iter->sample.item[loop],&Ahead))
+			{
+					if(!strcmp(iter->sample.playTennis,"Yes"))
+					{
+						Atemp->Yes++;
+					}
+					if(!strcmp(iter->sample.playTennis,"No"))
+					{
+						Atemp->No++;
+					}
+			}
+			else
+			{
+					Atemp=addNodeAAA(&Ahead,iter->sample.item[loop]);
+	
+					if(!strcmp(iter->sample.playTennis,"Yes"))
+					{
+						Atemp->Yes++;
+					}
+					if(!strcmp(iter->sample.playTennis,"No"))
+					{
+						Atemp->No++;
+					}
+				
+			}
 		}
-		else
+	//Test the read result
+		
+		for(AAA *iter_print=Ahead.next;iter_print!=NULL;iter_print=iter_print->next)
 		{
-				Atemp=addNodeAAA(&Ahead,iter->sample.outlook);
-
-				if(!strcmp(iter->sample.playTennis,"Yes"))
-				{
-					Atemp->Yes++;
-				}
-				if(!strcmp(iter->sample.playTennis,"No"))
-				{
-					Atemp->No++;
-				}
-			
+			printf("attribute:%s\nYes:%d\nNo:%d\n",iter_print->att,iter_print->Yes,iter_print->No);
+//			P_each[loop]-=(double)iter_print->Yes*lg2((double)iter_print->Yes/(iter_print->Yes+iter_print->No))/(iter_print->Yes+iter_print->No)+
+//							(double)iter_print->No*lg2((double)iter_print->No/(iter_print->Yes+iter_print->No))/(iter_print->Yes+iter_print->No);
 		}
-	}
-//Test the read result
-	for(AAA *iter_print=&Ahead;iter_print!=NULL;iter_print=iter_print->next)
-	{
-		printf("attribute:%s\nYes:%d\nNo:%d\n\n",iter_print->att,iter_print->Yes,iter_print->No);
+//		printf("%f\n\n",P_each[loop]);
+
+		//熵值的计算，这部分要重构！ 
 	}
 
 }
 
 
-void interface(void)
+void interface(void) 
 {
 	printf("********************************\n");	
 	printf("1-------------训练样本录入\n");
@@ -136,10 +158,10 @@ void readDrillorTestSample(char *file)
 	{
 		fread(&iter->sample,sizeof(head.sample),1,stream);
 		printf("编号：%d\n",iter->sample.number);
-		printf("天气：%s\n",iter->sample.outlook);
-		printf("温度：%s\n",iter->sample.temperate);
-		printf("湿度：%s\n",iter->sample.humidity);
-		printf("风力：%s\n",iter->sample.wind);
+		printf("天气：%s\n",iter->sample.item[0]);
+		printf("温度：%s\n",iter->sample.item[1]);
+		printf("湿度：%s\n",iter->sample.item[2]);
+		printf("风力：%s\n",iter->sample.item[3]);
 		printf("是否打羽毛球：%s\n\n",iter->sample.playTennis);		
 		iter=iter->next;
 	}	
@@ -148,7 +170,7 @@ void readDrillorTestSample(char *file)
 }
 void inputDrillSample(void)
 {
-	printf("This is function inputDrillSample,it is HALF completed\n");
+//	printf("This is function inputDrillSample,it is HALF completed\n");
 	FILE * fp=NULL ;
 	fp=fopen("drill.dat","a+");
 	if(fp==NULL)
@@ -181,13 +203,13 @@ void inputDrillSample(void)
 //		scanf("%d",&sample[i].sample.number); 
 		sample[i].sample.number=i+1;
 		printf("天气(Sunny\\Overcast\\Rain)：");
-		scanf("%s",sample[i].sample.outlook);
+		scanf("%s",sample[i].sample.item[0]);
 		printf("温度(Hot\\Mild\\Cool)：");
-		scanf("%s",sample[i].sample.temperate);
+		scanf("%s",sample[i].sample.item[1]);
 		printf("湿度(High\\Normal)：");
-		scanf("%s",sample[i].sample.humidity);
+		scanf("%s",sample[i].sample.item[2]);
 		printf("风力(Strong\\Weak)：");
-		scanf("%s",sample[i].sample.wind);
+		scanf("%s",sample[i].sample.item[3]);
 		printf("是否玩网球(Yes\\No)：");
 		scanf("%s",sample[i].sample.playTennis);
 		if(i<number-1)
@@ -237,13 +259,13 @@ void inputTestSample(void)
 		printf("现在输入的是第 %d 份数据:\n",i+1);
 		sample[i].sample.number=i+1;
 		printf("天气(Sunny\\Overcast\\Rain)：");
-		scanf("%s",sample[i].sample.outlook);
+		scanf("%s",sample[i].sample.item[0]);
 		printf("温度(Hot\\Mild\\Cool)：");
-		scanf("%s",sample[i].sample.temperate);
+		scanf("%s",sample[i].sample.item[1]);
 		printf("湿度(High\\Normal)：");
-		scanf("%s",sample[i].sample.humidity);
+		scanf("%s",sample[i].sample.item[2]);
 		printf("风力(Strong\\Weak)：");
-		scanf("%s",sample[i].sample.wind);
+		scanf("%s",sample[i].sample.item[3]);
 		strcpy(sample[i].sample.playTennis,"UNKNOWN");
 		if(i<number-1)
 		{

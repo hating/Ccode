@@ -4,10 +4,7 @@
 
 typedef struct Sample {
 	int number;
-	char outlook[LENGTH];
-	char temperate[LENGTH];
-	char humidity[LENGTH];
-	char wind[LENGTH];
+	char item[4][LENGTH];
 	char playTennis[LENGTH];
 }Sample;
 
@@ -24,10 +21,7 @@ typedef struct AAA{
 }AAA;
 
 typedef struct Rules{
-	char rule1[LENGTH];
-	char rule2[LENGTH];
-	char rule3[LENGTH];
-	char rule4[LENGTH];
+	char rule[4][LENGTH];
 	char result[LENGTH];
 	Rules *next;
 }Rules;
