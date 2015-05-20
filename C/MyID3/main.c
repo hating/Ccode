@@ -50,13 +50,10 @@ AAA *find(char *compare,AAA *source)
 	return NULL;
 }
 
-void ID3(NodeSample *head)
+double val_entropy(NodeSample *head)
 {
-	double 	P_each[4]={0},P_all[4]={0};
-	for(int loop=0;loop<4;loop++)
-	{
 		AAA Ahead,*Atemp=NULL;
-		
+		int dataCnt=0;
 	//Initiation
 		Ahead.next=NULL;
 		Ahead.Yes=0;
@@ -65,45 +62,52 @@ void ID3(NodeSample *head)
 	
 		for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
 		{
-			if(Atemp=find(iter->sample.item[loop],&Ahead))
-			{
+			
 					if(!strcmp(iter->sample.playTennis,"Yes"))
 					{
-						Atemp->Yes++;
+						Ahead.Yes++;
 					}
 					if(!strcmp(iter->sample.playTennis,"No"))
 					{
-						Atemp->No++;
+						Ahead.No++;
 					}
-			}
-			else
-			{
-					Atemp=addNodeAAA(&Ahead,iter->sample.item[loop]);
-	
-					if(!strcmp(iter->sample.playTennis,"Yes"))
-					{
-						Atemp->Yes++;
-					}
-					if(!strcmp(iter->sample.playTennis,"No"))
-					{
-						Atemp->No++;
-					}
-				
-			}
+			dataCnt++;
 		}
 	//Test the read result
-		
-		for(AAA *iter_print=Ahead.next;iter_print!=NULL;iter_print=iter_print->next)
+	printf("Yes:%d\tNo:%d\n",Ahead.Yes,Ahead.No);
+	double I=0.0;
+	I=-1.0*Ahead.Yes/dataCnt*lg2(1.0*Ahead.Yes/dataCnt)-1.0*Ahead.No/dataCnt*lg2(1.0*Ahead.No/dataCnt);
+	printf("%f\n",I);
+	return I;
+};
+void att_val(char *att,NodeSample *head,char val[][LENGTH])
+{
+	
+}
+
+double att_entropy(char *att,NodeSample *head)//Pass the name of the attribute,and my data.
+{
+	//Something maybe added to here. ( att_val(att,data) )
+	char val[4][LENGTH];
+	att_val(att,head,val);
+	NodeSample new_data;
+	double I=0.0,Val_E=0.0;
+}
+NodeSample* ID3(NodeSample *head)
+{
+	Tree_Node tree,tree_temp;
+	double entropy=val_entropy(head);
+	double gain,Att_T,temp=0.0;
+	for( ; ; )//Unfinished
+	{
+		Att_E=att_entropy(*iter,data);
+		gain=entropy-Att_E;
+		if(gain>temp)
 		{
-			printf("attribute:%s\nYes:%d\nNo:%d\n",iter_print->att,iter_print->Yes,iter_print->No);
-//			P_each[loop]-=(double)iter_print->Yes*lg2((double)iter_print->Yes/(iter_print->Yes+iter_print->No))/(iter_print->Yes+iter_print->No)+
-//							(double)iter_print->No*lg2((double)iter_print->No/(iter_print->Yes+iter_print->No))/(iter_print->Yes+iter_print->No);
+			temp=gain;
+			//Set tree root.
 		}
-//		printf("%f\n\n",P_each[loop]);
-
-		//熵值的计算，这部分要重构！ 
 	}
-
 }
 
 

@@ -20,11 +20,16 @@ typedef struct AAA{
 	AAA *next;
 }AAA;
 
-typedef struct Rules{
-	char rule[4][LENGTH];
-	char result[LENGTH];
-	Rules *next;
-}Rules;
+//typedef struct Rules{
+//	char rule[4][LENGTH];
+//	char result[LENGTH];
+//	Rules *next;
+//}Rules;
 
-
+typedef struct Tree_Node{
+	char Yes_or_No[LENGTH];
+	char attrid[LENGTH];
+	char attrvalue[LENGTH]; 
+	Tree_Node *childNode;
+}Tree_Node;
 #endif
