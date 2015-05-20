@@ -80,34 +80,190 @@ double val_entropy(NodeSample *head)
 	printf("%f\n",I);
 	return I;
 };
-void att_val(char *att,NodeSample *head,char val[][LENGTH])
+int att_val(char branchs[][20],NodeSample *head,char *attrid)
 {
+	int X=99,i=0;;
+	if(!strcmp(attrid,"Outlook")) X=0;
+	if(!strcmp(attrid,"Temperature")) X=1;
+	if(!strcmp(attrid,"Humidity")) X=2;
+	if(!strcmp(attrid,"Windy")) X=3;
 	
+	for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
+	{
+		
+		for(i=0;branchs[i][0]!='\0';i++)
+		{
+			if(!strcmp(iter->sample.item[X],branchs[i]))
+			{
+				break;
+			}
+		}
+		if(branchs[i][0]=='\0')
+		{
+			strcpy(branchs[i],iter->sample.item[X]);
+			i++;
+		}
+	}
+	return i;	
 }
 
-double att_entropy(char *att,NodeSample *head)//Pass the name of the attribute,and my data.
+double att_entropy(int loop,NodeSample *head)//Pass the name of the attribute,and my data.
 {
 	//Something maybe added to here. ( att_val(att,data) )
-	char val[4][LENGTH];
-	att_val(att,head,val);
-	NodeSample new_data;
-	double I=0.0,Val_E=0.0;
+//	char val[4][LENGTH];
+//	att_val(att,head,val);
+//	NodeSample new_data;
+//	double I=0.0,Val_E=0.0;
+//	double 	P_each[4]={0},P_all[4]={0};
+//	for(int loop=0;loop<4;loop++)
+//	{
+		double I=0.0;
+		AAA Ahead,*Atemp=NULL;
+		int dataCnt=0;
+	//Initiation
+		Ahead.next=NULL;
+		Ahead.Yes=0;
+		Ahead.No=0;
+		strcpy(Ahead.att,"\0");
+	
+		for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
+		{
+			
+			if(Atemp=find(iter->sample.item[loop],&Ahead))
+			{
+					if(!strcmp(iter->sample.playTennis,"Yes"))
+					{
+						Atemp->Yes++;
+					}
+					if(!strcmp(iter->sample.playTennis,"No"))
+					{
+						Atemp->No++;
+					}
+			}
+			else
+			{
+					Atemp=addNodeAAA(&Ahead,iter->sample.item[loop]);
+	
+					if(!strcmp(iter->sample.playTennis,"Yes"))
+					{
+						Atemp->Yes++;
+					}
+					if(!strcmp(iter->sample.playTennis,"No"))
+					{
+						Atemp->No++;
+					}
+				
+			}
+			dataCnt++;
+		}
+	//Test the read result
+		
+		for(AAA *iter_print=Ahead.next;iter_print!=NULL;iter_print=iter_print->next)
+		{
+			printf("attribute:%s\nYes:%d\nNo:%d\n",iter_print->att,iter_print->Yes,iter_print->No);
+		}
+		
+		for(AAA *iter_calc=Ahead.next;iter_calc!=NULL;iter_calc=iter_calc->next)
+		{
+			I-=iter_calc->Yes* lg2( 1.0*iter_calc->Yes/(iter_calc->Yes+iter_calc->No) ) + iter_calc->No *lg2( 1.0*iter_calc->No/(iter_calc->Yes+iter_calc->No) );
+		}
+//	}
+	
+	
+//	for(int i=0;i<4;i++)
+//	{
+//		P_each[i]/=14;
+		printf("%f\n",I/dataCnt);
+//	}
+	return  I/dataCnt;
 }
-NodeSample* ID3(NodeSample *head)
+NodeSample *pick_items(char *attrid,char *branchs,NodeSample *head)
+{
+	int i=0,X=99;
+	if(!strcmp(attrid,"Outlook")) X=0;
+	if(!strcmp(attrid,"Temperature")) X=1;
+	if(!strcmp(attrid,"Humidity")) X=2;
+	if(!strcmp(attrid,"Windy")) X=3;
+	
+	NodeSample *new_head=(NodeSample *)malloc(sizeof(NodeSample));
+	NodeSample *iter_node=new_head;
+	
+	for(NodeSample* iter=head->next;iter!=NULL;iter=iter->next)
+	{
+		if(!strcmp(iter->sample.item[X],branchs))
+		{
+			NodeSample *node=(NodeSample *)malloc(sizeof(NodeSample));
+			node->sample.number=0;
+			for(int i=0;i<4;i++)
+			{
+				strcpy(node->sample.item[i],iter->sample.item[i]);	
+			}
+			strcpy(node->sample.playTennis,iter->sample.playTennis);
+			node->next=NULL;
+			iter_node->next=node;
+			iter_node=node;
+		}
+	}
+	return new_head;
+}
+
+Tree_Node ID3(NodeSample *head)
 {
 	Tree_Node tree,tree_temp;
+	char attrid[4][20]={"Outlook","Temperature","Humidity","Windy"};
 	double entropy=val_entropy(head);
-	double gain,Att_T,temp=0.0;
-	for( ; ; )//Unfinished
+	double gain,Att_E,temp=0.0;
+	//Initiation
+	strcpy(tree.attrid,"UNKNOWN");
+	strcpy(tree.attrvalue,"UNKNOWN");
+	strcpy(tree.Yes_or_No,"UNKNOWN");
+	tree.childNode[0]=NULL;
+	tree.childNode[1]=NULL;
+	tree.childNode[2]=NULL;
+	tree.childNode[3]=NULL;
+	
+	for(int i=0;i<4;i++)
 	{
-		Att_E=att_entropy(*iter,data);
+		tree.childNode[i]=NULL;
+	}
+	
+	for(int i=0;i<4;i++)
+	{
+		Att_E=att_entropy(i,head);
 		gain=entropy-Att_E;
 		if(gain>temp)
 		{
 			temp=gain;
-			//Set tree root.
+			strcpy(tree.attrid,attrid[i]);
 		}
 	}
+	if(strcmp(tree.attrid,"UNKNOWN"))
+	{
+		char branchs[4][20]={"\0","\0","\0","\0",};
+		int numberLoop=att_val(branchs,head,tree.attrid)+1;//寻找在该attribute中有多少种不同的属性 
+		for(int i=0;i<numberLoop;i++)
+		{
+			NodeSample *new_head=pick_items(tree.attrid,branchs[i],head);
+			printf("\n****************\n");
+			tree_temp=ID3(new_head);
+			for(int i=0;i<4;i++)//插入儿子节点 
+			{
+				if(tree.childNode[i]==NULL)
+				{
+					tree.childNode[i]=&tree_temp;
+					break;
+				}
+			}
+		}
+	}
+	
+	else
+	{
+		printf("\n***************\n");
+		strcpy(tree.attrid,"Leaf");
+		strcpy(tree.Yes_or_No,head->next->sample.playTennis);
+	}
+	return tree;
 }
 
 
@@ -232,6 +388,7 @@ void inputDrillSample(void)
 }
 void inputTestSample(void)
 {
+	
 	printf("This is function inputTestSample,it is not yeat completed\n");
 	FILE * fp=NULL ;
 	fp=fopen("test.dat","a+");
@@ -286,6 +443,17 @@ void inputTestSample(void)
 	fclose(fp);
 	interface();	
 }
+void printResult(Tree_Node *Result)
+{
+	printf("Yes_or_No:%s\n",Result->Yes_or_No);
+	printf("attrid:%s\n",Result->attrid);
+	printf("attrvalue:%s\n",Result->attrvalue);
+	printf("\n\n");
+	for(int i=0;i<4&&Result->childNode[i]!=NULL;i++)
+	{
+		printResult(Result->childNode[i]);
+	}
+}
 void showRules(void)
 
 {
@@ -325,7 +493,9 @@ void showRules(void)
 		fread(&iter->sample,sizeof(head.sample),1,stream);
 		iter=iter->next;
 	}
-	ID3(&head);
+	Tree_Node Result=ID3(&head);
+	Tree_Node *pResult=&Result;
+	printResult(pResult);
 }
 void showTestResult(void)
 {
