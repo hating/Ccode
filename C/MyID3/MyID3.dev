@@ -52,13 +52,13 @@ SyncProduct=1
 
 [Unit1]
 FileName=main.c
-CompileCpp=1
+CompileCpp=0
 Folder=
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=$(CPP) -c main.c -o main.o $(CXXFLAGS)
+BuildCmd=$(CC) -c main.c -o main.o $(CFLAGS)
 
 [Unit2]
 FileName=id3.h

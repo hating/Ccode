@@ -534,19 +534,7 @@ loop:
 	interface();
 	int choose=0;
 	choose=getchar();
-	switch (choose)
-	{
-		case '1':
-			inputDrillSample();
-			break;
-		case '2':
-			inputTestSample();
-			break;
-		case '3':
-			tree=showRules();
-			break;
-		case '4':
-			if(tree=NULL)
+	switch (ch
 			{
 				printf("The tree is not built yet. Please run function 3 first.\n");
 			}
