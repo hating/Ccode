@@ -224,6 +224,7 @@ Tree_Node *ID3(NodeSample *head)
 	
 	for(int i=0;i<4;i++)
 	{
+		strcpy(tree->branch_name[i],"UNKNOWN");
 		tree->childNode[i]=NULL;
 	}
 	
@@ -447,17 +448,44 @@ void inputTestSample(void)
 	fclose(fp);
 	interface();	
 }
-void printResult(Tree_Node *Result)
+void printResult(Tree_Node *Result,int num)
 {
-	printf("root:%s\n",Result->root);
-	printf("isleaf:%s\n",Result->leaf);
-//	printf("attrvalue:%s\n",Result->attrvalue);
-	printf("\n\n");
-	for(int i=0;i<4&&Result->childNode[i]!=NULL;i++)
+//	printf("\n");
+//	printf("root:%s\n",Result->root);
+//	printf("isleaf:%s\n",Result->leaf);
+//	for(int i=0;i<4&&Result->childNode[i]!=NULL;i++)
+//	{
+//		printf("Fatheris:%s\nBranchs:%s\n",Result->root,Result->branch_name);
+//		printResult(Result->childNode[i]);
+//	}
+//	static int num=0;
+	char temp[20]="      ";
+	if(!strcmp(Result->leaf,"true"))
 	{
-		printf("Branchs:%s\n",Result->branch_name);
-		printResult(Result->childNode[i]);
+		for(int i=0;i!=2+num;i++)
+		{
+			printf("%s",temp);
+		}
+		printf("+----Leaf:%s\n",Result->root);
 	}
+	else
+		{
+			for(int i=0;i!=0+num;i++)
+			{
+				printf("%s",temp);
+				
+			}
+			printf("+---Attribute:%s\n",Result->root);
+			for(int i=0;Result->childNode[i]!=NULL;i++)
+			{
+				for(int itemp=0;itemp!=1+num;itemp++)
+				{
+					printf("%s",temp);
+				}
+				printf("+---Branch:%s\n",Result->branch_name[i]);
+				printResult(Result->childNode[i],num+2);
+			}
+		}
 }
 void showRules(void)
 
@@ -500,7 +528,7 @@ void showRules(void)
 	}
 	Tree_Node *Result=ID3(&head);
 //	Tree_Node *pResult=&Result;
-	printResult(Result);
+	printResult(Result,0);
 }
 void showTestResult(void)
 {
