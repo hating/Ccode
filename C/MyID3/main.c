@@ -207,24 +207,24 @@ NodeSample *pick_items(char *attrid,char *branchs,NodeSample *head)
 	return new_head;
 }
 
-Tree_Node ID3(NodeSample *head)
+Tree_Node *ID3(NodeSample *head)
 {
-	Tree_Node tree,tree_temp;
+	Tree_Node *tree=(Tree_Node *)malloc(sizeof(Tree_Node)),*tree_temp=(Tree_Node *)malloc(sizeof(Tree_Node));
 	char attrid[4][20]={"Outlook","Temperature","Humidity","Windy"};
 	double entropy=val_entropy(head);
 	double gain,Att_E,temp=0.0;
 	//Initiation
-	strcpy(tree.attrid,"UNKNOWN");
-	strcpy(tree.attrvalue,"UNKNOWN");
-	strcpy(tree.Yes_or_No,"UNKNOWN");
-	tree.childNode[0]=NULL;
-	tree.childNode[1]=NULL;
-	tree.childNode[2]=NULL;
-	tree.childNode[3]=NULL;
+	strcpy(tree->leaf,"false");
+	strcpy(tree->root,"root");
+//	strcpy(tree->attrvalue,"UNKNOWN");
+	tree->childNode[0]=NULL;
+	tree->childNode[1]=NULL;
+	tree->childNode[2]=NULL;
+	tree->childNode[3]=NULL;
 	
 	for(int i=0;i<4;i++)
 	{
-		tree.childNode[i]=NULL;
+		tree->childNode[i]=NULL;
 	}
 	
 	for(int i=0;i<4;i++)
@@ -234,23 +234,27 @@ Tree_Node ID3(NodeSample *head)
 		if(gain>temp)
 		{
 			temp=gain;
-			strcpy(tree.attrid,attrid[i]);
+			strcpy(tree->root,attrid[i]);
 		}
 	}
-	if(strcmp(tree.attrid,"UNKNOWN"))
+	if(strcmp(tree->root,"root"))
 	{
 		char branchs[4][20]={"\0","\0","\0","\0",};
-		int numberLoop=att_val(branchs,head,tree.attrid)+1;//寻找在该attribute中有多少种不同的属性 
-		for(int i=0;i<numberLoop;i++)
+		int numberLoop=att_val(branchs,head,tree->root)+1;//寻找在该attribute中有多少种不同的属性 
+		for(int loop=0;loop<numberLoop;loop++)
 		{
-			NodeSample *new_head=pick_items(tree.attrid,branchs[i],head);
+			NodeSample *new_head=pick_items(tree->root,branchs[loop],head);
 			printf("\n****************\n");
 			tree_temp=ID3(new_head);
 			for(int i=0;i<4;i++)//插入儿子节点 
 			{
-				if(tree.childNode[i]==NULL)
+				if(tree->childNode[i]==NULL)
 				{
-					tree.childNode[i]=&tree_temp;
+//					Branch *branch=(Branch *)malloc(sizeof(Branch));
+					strcpy(tree->branch_name[loop],branchs[loop]);
+//					strcpy(branch->branch_name,branchs[loop]);
+//					branch->childNode=tree_temp;
+					tree->childNode[loop]=tree_temp;
 					break;
 				}
 			}
@@ -259,9 +263,9 @@ Tree_Node ID3(NodeSample *head)
 	
 	else
 	{
-		printf("\n***************\n");
-		strcpy(tree.attrid,"Leaf");
-		strcpy(tree.Yes_or_No,head->next->sample.playTennis);
+//		printf("\n***************\n");
+		strcpy(tree->leaf,"true");
+		strcpy(tree->root,head->next->sample.playTennis);
 	}
 	return tree;
 }
@@ -445,12 +449,13 @@ void inputTestSample(void)
 }
 void printResult(Tree_Node *Result)
 {
-	printf("Yes_or_No:%s\n",Result->Yes_or_No);
-	printf("attrid:%s\n",Result->attrid);
-	printf("attrvalue:%s\n",Result->attrvalue);
+	printf("root:%s\n",Result->root);
+	printf("isleaf:%s\n",Result->leaf);
+//	printf("attrvalue:%s\n",Result->attrvalue);
 	printf("\n\n");
 	for(int i=0;i<4&&Result->childNode[i]!=NULL;i++)
 	{
+		printf("Branchs:%s\n",Result->branch_name);
 		printResult(Result->childNode[i]);
 	}
 }
@@ -493,9 +498,9 @@ void showRules(void)
 		fread(&iter->sample,sizeof(head.sample),1,stream);
 		iter=iter->next;
 	}
-	Tree_Node Result=ID3(&head);
-	Tree_Node *pResult=&Result;
-	printResult(pResult);
+	Tree_Node *Result=ID3(&head);
+//	Tree_Node *pResult=&Result;
+	printResult(Result);
 }
 void showTestResult(void)
 {

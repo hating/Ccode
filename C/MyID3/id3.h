@@ -20,10 +20,18 @@ typedef struct AAA{
 	AAA *next;
 }AAA;
 
+//typedef struct Branch{
+//	char branch_name[LENGTH];
+//	Tree_Node *childNode;
+//}Branch;
+
 typedef struct Tree_Node{
-	char Yes_or_No[LENGTH];
-	char attrid[LENGTH];
-	char attrvalue[LENGTH]; 
+	char root[LENGTH];
+	char leaf[LENGTH];
+//	char attrvalue[LENGTH]; 
+	char branch_name[4][LENGTH];
 	Tree_Node *childNode[4];
+	
 }Tree_Node;
+
 #endif

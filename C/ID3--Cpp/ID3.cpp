@@ -84,7 +84,7 @@ My_Data pick_items(const string &att,const string &val,const My_Data &data)//É¸Ñ
     {
         int num=iter_temp-data.attributes.begin();//¼ÆËãËùÉ¸Ñ¡µÄattributeÓëattributeµÄ¾àÀë 
         for(vector< vector<string> >::const_iterator iter=data.items.begin();iter!=data.items.end();++iter)//±éÀú¾Édata 
-            if((*iter)[num]==val)//Èç¹ûÓëvalÏàµÈ 
+            if((*iter)[num]==val)//Èç¹ûÓëval(Sunny,Wind,Overcast)ÏàµÈ 
                 new_data.items.push_back(*iter);//¼Óµ½ĞÂdataÉÏÃæÈ¥ 
         new_data.attributes=data.attributes;//Íê³É¸´ÖÆ 
         new_data.col=data.col;//Íê³É¸´ÖÆ 
@@ -148,7 +148,7 @@ Decision_Tree ID3(const My_Data &data)
     double gain,Att_E,temp=0.0;//gainµÄ×÷ÓÃÊÇ£¬Att_EµÄ×÷ÓÃÊÇ±£´æattributeµÄìØ£¬tempµÄ×÷ÓÃÊÇ 
     for(vector<string>::const_iterator iter=data.attributes.begin();iter!=data.attributes.end()-1;++iter)//attributeµÄÑ­»· 
     {
-        Att_E=att_entropy(*iter,data);//Ì«¸´ÔÓ£¬´ıÍê³É 
+        Att_E=att_entropy(*iter,data);
         gain=entropy-Att_E;// ÓÃµÄÊÇ3.1.2ÓÃĞÅÏ¢ÔöÒæ¶ÈÁ¿ÆÚÍûµÄìØ½µµÍµÄ·½·¨£¬ http://www.cnblogs.com/dztgc/archive/2013/04/22/3036529.html
         if(gain>temp)//ÀàËÆÓÚÕÒµ½×î´óµÄÊı£¬ÕâÀïÕÒµ½ìØ×î´óµÄÖµ£¬×÷Îª¸ù½Úµã 
         {
@@ -156,20 +156,20 @@ Decision_Tree ID3(const My_Data &data)
             tree.set_root(*iter);
         }
     }
-    if(tree.get_root()!="ROOT")//Èç¹ûROOT½ÚµãÒÑ¾­´æÔÚ 
+    if(tree.get_root()!="ROOT")//Èç¹ûroot±»ĞŞ¸Ä£¬ÕÒ³öºÏÊÊµÄÊı¾İ£¬²¢ÇÒµ÷ÓÃID3Ëã·¨ 
     {
-        vector<string> branchs=att_val(tree.get_root(),data);
-        for(vector<string>::const_iterator iter=branchs.begin();iter!=branchs.end();++iter)
+        vector<string> branchs=att_val(tree.get_root(),data);//Ñ¡³ö¸ÃÊôĞÔËùÓµÓĞµÄ·ÖÖ§ 
+        for(vector<string>::const_iterator iter=branchs.begin();iter!=branchs.end();++iter)//Ã¿¸ö·ÖÖ§¶¼¼ìÑéÒ»±é£¬iter=sunny or wind  
         {
-            My_Data new_data=pick_items(tree.get_root(),*iter,data);
+            My_Data new_data=pick_items(tree.get_root(),*iter,data);//ÄÃ³ö·ûºÏiterµÄÊı¾İ 
             tree_temp=ID3(new_data);//µİ¹éµ÷ÓÃID3 
-            tree.set_branch(*iter,tree_temp);
+            tree.set_branch(*iter,tree_temp);//°Ñtree_temp¹ÒÔÚtreeÊ÷µÄÏÂÃæ 
         }
     }
     else
     {
-        tree.set_leaf(true);
-        tree.set_root((data.items[0])[data.col-1]);
+        tree.set_leaf(true);//ÉèÖÃÒ¶×Ó½Úµã 
+        tree.set_root((data.items[0])[data.col-1]);//°ÑrootÉèÖÃ³ÉYes»òÕßNo 
     }
     return tree;
 }
