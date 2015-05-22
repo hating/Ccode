@@ -1,19 +1,13 @@
 [Editors]
 Order=0,1
-Focused=1
+Focused=0
 [Editor_0]
-<<<<<<< HEAD
-CursorCol=15
-CursorRow=535
-TopLine=520
-=======
-CursorCol=2
-CursorRow=230
-TopLine=215
->>>>>>> parent of adfee2e... Changing language to English.
+CursorCol=4
+CursorRow=523
+TopLine=515
 LeftChar=1
 [Editor_1]
-CursorCol=13
-CursorRow=6
+CursorCol=12
+CursorRow=20
 TopLine=1
 LeftChar=1

@@ -25,4 +25,4 @@ $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
 main.o: main.c
-	$(CPP) -c main.c -o main.o $(CXXFLAGS)
+	$(CC) -c main.c -o main.o $(CFLAGS)
