@@ -42,7 +42,8 @@ AAA *addNodeAAA(AAA *Ahead,char *s)
 AAA *find(char *compare,AAA *source)
 {
 	
-	for(AAA *iterInFind=source;iterInFind!=NULL;iterInFind=iterInFind->next)
+	AAA *iterInFind=source;
+	for(iterInFind=source;iterInFind!=NULL;iterInFind=iterInFind->next)
 	{
 		if(!strcmp(compare,iterInFind->att))
 		{
@@ -56,6 +57,7 @@ double val_entropy(NodeSample *head)
 {
 		AAA Ahead,*Atemp=NULL;
 		int dataCnt=0;
+		NodeSample *iter=head->next;
 
 	//Initiation
 		Ahead.next=NULL;
@@ -63,7 +65,7 @@ double val_entropy(NodeSample *head)
 		Ahead.No=0;
 		strcpy(Ahead.att,"\0");
 	
-		for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
+		for(iter=head->next;iter!=NULL;iter=iter->next)
 		{
 			
 					if(!strcmp(iter->sample.playTennis,"Yes"))
@@ -82,13 +84,14 @@ double val_entropy(NodeSample *head)
 };
 int att_val(char branchs[][20],NodeSample *head,char *attrid)
 {
-	int X=99,i=0;;
+	int X=99,i=0;
+	NodeSample *iter=head->next;
 	if(!strcmp(attrid,"Outlook")) X=0;
 	if(!strcmp(attrid,"Temperature")) X=1;
 	if(!strcmp(attrid,"Humidity")) X=2;
 	if(!strcmp(attrid,"Windy")) X=3;
 	
-	for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
+	for(iter=head->next;iter!=NULL;iter=iter->next)
 	{
 		
 		for(i=0;branchs[i][0]!='\0';i++)
@@ -118,8 +121,9 @@ double att_entropy(int loop,NodeSample *head)//Pass the name of the attribute,an
 		Ahead.Yes=0;
 		Ahead.No=0;
 		strcpy(Ahead.att,"\0");
-	
-		for(NodeSample *iter=head->next;iter!=NULL;iter=iter->next)
+		
+		NodeSample *iter=head->next;
+		for(iter=head->next;iter!=NULL;iter=iter->next)
 		{
 			
 			if(Atemp=find(iter->sample.item[loop],&Ahead))
@@ -149,7 +153,8 @@ double att_entropy(int loop,NodeSample *head)//Pass the name of the attribute,an
 			}
 			dataCnt++;
 		}
-		for(AAA *iter_calc=Ahead.next;iter_calc!=NULL;iter_calc=iter_calc->next)
+		AAA *iter_calc=Ahead.next;
+		for(iter_calc=Ahead.next;iter_calc!=NULL;iter_calc=iter_calc->next)
 		{
 			I-=iter_calc->Yes* lg2( 1.0*iter_calc->Yes/(iter_calc->Yes+iter_calc->No) ) + iter_calc->No *lg2( 1.0*iter_calc->No/(iter_calc->Yes+iter_calc->No) );
 		}
@@ -165,14 +170,15 @@ NodeSample *pick_items(char *attrid,char *branchs,NodeSample *head)
 	
 	NodeSample *new_head=(NodeSample *)malloc(sizeof(NodeSample));
 	NodeSample *iter_node=new_head;
-	
-	for(NodeSample* iter=head->next;iter!=NULL;iter=iter->next)
+	NodeSample* iter=head->next;
+	for(iter=head->next;iter!=NULL;iter=iter->next)
 	{
 		if(!strcmp(iter->sample.item[X],branchs))
 		{
 			NodeSample *node=(NodeSample *)malloc(sizeof(NodeSample));
 			node->sample.number=0;
-			for(int i=0;i<4;i++)
+			int i=0;
+			for(i=0;i<4;i++)
 			{
 				strcpy(node->sample.item[i],iter->sample.item[i]);	
 			}
@@ -199,34 +205,36 @@ Tree_Node *ID3(NodeSample *head)
 	tree->childNode[1]=NULL;
 	tree->childNode[2]=NULL;
 	tree->childNode[3]=NULL;
-	
-	for(int i=0;i<4;i++)
+	int i_first=0;
+	for(i_first=0;i_first<4;i_first++)
 	{
-		strcpy(tree->branch_name[i],"UNKNOWN");
-		tree->childNode[i]=NULL;
+		strcpy(tree->branch_name[i_first],"UNKNOWN");
+		tree->childNode[i_first]=NULL;
 	}
-	
-	for(int i=0;i<4;i++)
+	int i_second=0;
+	for(i_second=0;i_second<4;i_second++)
 	{
-		Att_E=att_entropy(i,head);
+		Att_E=att_entropy(i_second,head);
 		gain=entropy-Att_E;
 		if(gain>temp)
 		{
 			temp=gain;
-			strcpy(tree->root,attrid[i]);
+			strcpy(tree->root,attrid[i_second]);
 		}
 	}
 	if(strcmp(tree->root,"root"))
 	{
 		char branchs[4][20]={"\0","\0","\0","\0",};
 		int numberLoop=att_val(branchs,head,tree->root)+1;
-		for(int loop=0;loop<numberLoop;loop++)
+		int loop=0;	
+		for(loop=0;loop<numberLoop;loop++)
 		{
 			NodeSample *new_head=pick_items(tree->root,branchs[loop],head);
 			tree_temp=ID3(new_head);
-			for(int i=0;i<4;i++)//Insert the child node. 
+			int i_third=0;
+			for(i_third=0;i_third<4;i_third++)//Insert the child node. 
 			{
-				if(tree->childNode[i]==NULL)
+				if(tree->childNode[i_third]==NULL)
 				{
 					strcpy(tree->branch_name[loop],branchs[loop]);
 					tree->childNode[loop]=tree_temp;
@@ -284,15 +292,17 @@ void readDrillorTestSample(char *file)
 		exit(1);
 	}
 	head.next=&sample[0];
-	for(int i=0;i<number/sizeof(head.sample)-1;i++)
+	int i_first=0;
+	for(i_first=0;i_first<number/sizeof(head.sample)-1;i_first++)
 	{
-		sample[i].next=&sample[i+1];
+		sample[i_first].next=&sample[i_first+1];
 	}
 	
 	printf("Found %d item(s) in file %s.\n\n",number/sizeof(head.sample),file);
 
 	NodeSample* iter=head.next;
-	for(int i=0;i<number/sizeof(head.sample);i++)
+	int i_second=0;
+	for(i_second=0;i_second<number/sizeof(head.sample);i_second++)
 	{
 		fread(&iter->sample,sizeof(head.sample),1,stream);
 		printf("Number:%d\n",iter->sample.number);
@@ -326,13 +336,14 @@ void inputDrillSample(void)
 	if(number==0)
 	{
 		printf("You input 0.No item will be added\n");
-		goto finish;
+//		goto finish;
 	}
 	NodeSample head;
 	NodeSample sample[number];
 	head.next=&sample[0];	
 //下一个版本进行输入数据的检测 
-	for(int i=0;i<number;i++)//数据录入到内存中,并建立链表 
+	int i=0;
+	for(i=0;i<number;i++)//数据录入到内存中,并建立链表 
 	{
 		printf("Now you are imputing item %d :\n",i+1);
 //		printf("编号：");
@@ -353,8 +364,8 @@ void inputDrillSample(void)
 			sample[i].next=&sample[i+1];
 		}
 	}
- 
-	for(NodeSample* iter=head.next;iter!=NULL;iter=iter->next)
+ 	NodeSample* iter=head.next;
+	for(iter=head.next;iter!=NULL;iter=iter->next)
 	{
 		fwrite(&iter->sample,sizeof(iter->sample),1,fp);
 	}
@@ -383,15 +394,15 @@ void inputTestSample(void)
 	if(number==0)
 	{
 		printf("You input 0.No item will be added\n");
-		goto finish;
+//		goto finish;
 	}
 	NodeSample head;
 	NodeSample sample[number];
 	head.next=&sample[0];
 		
 //下一个版本进行输入数据的检测 
-
-	for(int i=0;i<number;i++) 
+	int i=0;
+	for(i=0;i<number;i++) 
 	{
 		printf("Now you are inputing the  %d item:\n",i+1);
 		sample[i].sample.number=i+1;
@@ -409,8 +420,8 @@ void inputTestSample(void)
 			sample[i].next=&sample[i+1];
 		}
 	}
- 
-	for(NodeSample* iter=head.next;iter!=NULL;iter=iter->next)
+ 	NodeSample* iter=head.next;
+	for(iter=head.next;iter!=NULL;iter=iter->next)
 	{
 		fwrite(&iter->sample,sizeof(iter->sample),1,fp);
 	}
@@ -424,7 +435,8 @@ void printResult(Tree_Node *Result,int num)
 	char temp[20]="      ";
 	if(!strcmp(Result->leaf,"true"))
 	{
-		for(int i=0;i!=2+num;i++)
+		int i_first=0;
+		for(i_first=0;i_first!=2+num;i_first++)
 		{
 			printf("%s",temp);
 		}
@@ -432,20 +444,23 @@ void printResult(Tree_Node *Result,int num)
 	}
 	else
 		{
-			for(int i=0;i!=0+num;i++)
+			int i_second=0;
+			for(i_second=0;i_second!=0+num;i_second++)
 			{
 				printf("%s",temp);
 				
 			}
 			printf("+---Attribute:%s\n",Result->root);
-			for(int i=0;Result->childNode[i]!=NULL;i++)
+			int i_third=0;
+			for(i_third=0;Result->childNode[i_third]!=NULL;i_third++)
 			{
-				for(int itemp=0;itemp!=1+num;itemp++)
+				int itemp=0;
+				for(itemp=0;itemp!=1+num;itemp++)
 				{
 					printf("%s",temp);
 				}
-				printf("+---Branch:%s\n",Result->branch_name[i]);
-				printResult(Result->childNode[i],num+2);
+				printf("+---Branch:%s\n",Result->branch_name[i_third]);
+				printResult(Result->childNode[i_third],num+2);
 			}
 		}
 }
@@ -474,12 +489,14 @@ Tree_Node *showRules(void)
 		exit(1);
 	}
 	head.next=&sample[0];
-	for(int i=0;i<number/sizeof(head.sample)-1;i++)
+	int i_first=0;
+	for(i_first=0;i_first<number/sizeof(head.sample)-1;i_first++)
 	{
-		sample[i].next=&sample[i+1];
+		sample[i_first].next=&sample[i_first+1];
 	}
 	NodeSample* iter=head.next;
-	for(int i=0;i<number/sizeof(head.sample);i++)
+	int i_second=0;
+	for(i_second=0;i_second<number/sizeof(head.sample);i_second++)
 	{
 		fread(&iter->sample,sizeof(head.sample),1,stream);
 		iter=iter->next;
@@ -503,7 +520,8 @@ void match(NodeSample *node,Tree_Node *tree)
 				;
 			}
 		mark--;
-		for(int i=0;tree->childNode[i]!=NULL;i++)
+		int i=0;
+		for(i=0;tree->childNode[i]!=NULL;i++)
 		{
 			if(!strcmp(node->sample.item[mark],tree->branch_name[i]))
 			{
@@ -536,22 +554,25 @@ void showTestResult(Tree_Node *tree)
 		exit(1);
 	}
 	head.next=&sample[0];
-	for(int i=0;i<number/sizeof(head.sample)-1;i++)
+	int i_first=0;
+	for(i_first=0;i_first<number/sizeof(head.sample)-1;i_first++)
 	{
-		sample[i].next=&sample[i+1];
-		if(i==number/sizeof(head.sample)-2)
+		sample[i_first].next=&sample[i_first+1];
+		if(i_first==number/sizeof(head.sample)-2)
 		{
-			sample[i].next->next=NULL;
+			sample[i_first].next->next=NULL;
 		}
 	}
 	NodeSample* iterloop=head.next;
-	for(int i=0;i<number/sizeof(head.sample);i++)
+	int i_second=0;
+	for(i_second=0;i_second<number/sizeof(head.sample);i_second++)
 	{
 		fread(&iterloop->sample,sizeof(head.sample),1,stream);
 		iterloop=iterloop->next;
 	}
 //	printf("%d item found\n",number/sizeof(head.sample));
-	for(NodeSample *iter=head.next;iter!=NULL;iter=iter->next)
+	NodeSample *iter=head.next;
+	for(iter=head.next;iter!=NULL;iter=iter->next)
 	{
 		printf("Number:%d\n",iter->sample.number);
 		printf("Weather:%s\n",iter->sample.item[0]);
