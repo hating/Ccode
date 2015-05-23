@@ -1,6 +1,6 @@
 [Project]
 FileName=MyID3.dev
-Name=ÏîÄ¿2
+Name=MyID3
 Type=1
 Ver=2
 ObjFiles=
@@ -12,7 +12,7 @@ MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=
-IsCpp=1
+IsCpp=0
 Icon=
 ExeOutput=
 ObjectOutput=
@@ -27,8 +27,8 @@ CommandLine=
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=4
-CompilerSettings=0000000100000000001000000
+CompilerSet=0
+CompilerSettings=0000000000000000001000000
 UnitCount=2
 
 [VersionInfo]
@@ -51,22 +51,22 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=main.c
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CPP) -c main.c -o main.o $(CXXFLAGS)
-
-[Unit2]
 FileName=id3.h
-CompileCpp=1
+CompileCpp=0
 Folder=
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit2]
+FileName=main.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=$(CC) -c main.c -o main.o $(CFLAGS)
 
