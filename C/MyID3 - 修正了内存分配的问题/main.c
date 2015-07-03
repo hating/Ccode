@@ -376,11 +376,26 @@ void inputDrillSample(void)
 		exit(1);
 	}
 
+	
+/**
+	NodeSample sample[number];
+**/
 	sample=(NodeSample *)malloc(MEM_SIZE);
 	head.next=&sample[0];
+/**
+//下一个版本进行输入数据的检测 
+**/
+/**
+//数据录入到内存中,并建立链表
+**/
+
 	for(i=0;i<number;i++) 
 	{
 		printf("Now you are imputing item %d :\n",i+1);
+/**
+//		printf("编号：");
+//		scanf("%d",&sample[i].sample.number); 
+**/
 		sample[i].sample.number=i+1;
 		printf("Weather(Sunny\\Overcast\\Rain)：");
 		scanf("%s",sample[i].sample.item[0]);
@@ -388,7 +403,8 @@ void inputDrillSample(void)
 		scanf("%s",sample[i].sample.item[1]);
 		printf("Humidity(High\\Normal)：");
 		scanf("%s",sample[i].sample.item[2]);
-		printf("Windy(Strong\\Weak)：");		scanf("%s",sample[i].sample.item[3]);
+		printf("Windy(Strong\\Weak)：");
+		scanf("%s",sample[i].sample.item[3]);
 		printf("Play tennis or not(Yes\\No)：");
 		scanf("%s",sample[i].sample.playTennis);
 		if(i<number-1)
@@ -404,6 +420,10 @@ void inputDrillSample(void)
 	}
 	printf("All the item(s) saved.\n");
 	fclose(fp);
+/**
+	finish:
+		;
+**/
 }
 void inputTestSample(void)
 {
@@ -510,8 +530,8 @@ void printResult(Tree_Node *Result,int num)
 			}
 		}
 }
-
 Tree_Node *showRules(void)
+
 {
 	FILE *stream;
 	int number=0;

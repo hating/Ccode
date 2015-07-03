@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 #include "id3.h"
-#define MEM_SIZE 10000
 
 double lg2(double n)
 {
@@ -317,7 +316,7 @@ void readDrillorTestSample(char *file)
 	number=ftell(stream);
 	fseek(stream,0,SEEK_SET);	
 
-	sample=(NodeSample *)malloc(MEM_SIZE);
+	sample=(NodeSample *)malloc(number*2);
 
 	if(number/sizeof(head.sample)<=0)
 	{
@@ -376,11 +375,26 @@ void inputDrillSample(void)
 		exit(1);
 	}
 
-	sample=(NodeSample *)malloc(MEM_SIZE);
+	
+/**
+	NodeSample sample[number];
+**/
+	sample=(NodeSample *)malloc(number*2);
 	head.next=&sample[0];
+/**
+//下一个版本进行输入数据的检测 
+**/
+/**
+//数据录入到内存中,并建立链表
+**/
+
 	for(i=0;i<number;i++) 
 	{
 		printf("Now you are imputing item %d :\n",i+1);
+/**
+//		printf("编号：");
+//		scanf("%d",&sample[i].sample.number); 
+**/
 		sample[i].sample.number=i+1;
 		printf("Weather(Sunny\\Overcast\\Rain)：");
 		scanf("%s",sample[i].sample.item[0]);
@@ -388,7 +402,8 @@ void inputDrillSample(void)
 		scanf("%s",sample[i].sample.item[1]);
 		printf("Humidity(High\\Normal)：");
 		scanf("%s",sample[i].sample.item[2]);
-		printf("Windy(Strong\\Weak)：");		scanf("%s",sample[i].sample.item[3]);
+		printf("Windy(Strong\\Weak)：");
+		scanf("%s",sample[i].sample.item[3]);
 		printf("Play tennis or not(Yes\\No)：");
 		scanf("%s",sample[i].sample.playTennis);
 		if(i<number-1)
@@ -396,7 +411,6 @@ void inputDrillSample(void)
 			sample[i].next=&sample[i+1];
 		}
 	}
-	sample[number/sizeof(head.sample)-1].next=NULL;
  	iter=head.next;
 	for(iter=head.next;iter!=NULL;iter=iter->next)
 	{
@@ -404,6 +418,10 @@ void inputDrillSample(void)
 	}
 	printf("All the item(s) saved.\n");
 	fclose(fp);
+/**
+	finish:
+		;
+**/
 }
 void inputTestSample(void)
 {
@@ -439,7 +457,7 @@ void inputTestSample(void)
 /**
 	NodeSample *sample=(NodeSample *)calloc(number,sizeof(NodeSample));
 **/
-	sample=(NodeSample *)malloc(MEM_SIZE);
+	sample=(NodeSample *)malloc(number*2);
 	head.next=&sample[0];
 /**		
 //下一个版本进行输入数据的检测 
@@ -510,8 +528,8 @@ void printResult(Tree_Node *Result,int num)
 			}
 		}
 }
-
 Tree_Node *showRules(void)
+
 {
 	FILE *stream;
 	int number=0;
@@ -536,7 +554,7 @@ Tree_Node *showRules(void)
 /**
 	NodeSample sample[number/sizeof(head.sample)];
 **/
-	sample=(NodeSample *)malloc(MEM_SIZE);
+	sample=(NodeSample *)malloc(number*2);
 	if(number/sizeof(head.sample)<=0)
 	{
 		printf("Faild to fetch item in drill.dat.Program terminated\n");
@@ -610,7 +628,7 @@ void showTestResult(Tree_Node *tree)
 	NodeSample sample[number/sizeof(head.sample)];
 **/
 
-	sample=(NodeSample *)malloc(MEM_SIZE);
+	sample=(NodeSample *)malloc(number*2);
 	if(number/sizeof(head.sample)<=0)
 	{
 		printf("Faild to fetch item in test.dat.Program terminated\n");

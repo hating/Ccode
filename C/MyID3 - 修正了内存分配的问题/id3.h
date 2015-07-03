@@ -10,21 +10,21 @@ typedef struct Sample {
 
 typedef struct NodeSample {
 	Sample sample;
-	NodeSample* next;
+	struct NodeSample* next;
 }NodeSample;
 
 typedef struct AAA{
 	char att[LENGTH];
 	int Yes;
 	int No;
-	AAA *next;
+	struct AAA *next;
 }AAA;
 
 typedef struct Tree_Node{
 	char root[LENGTH];
 	char leaf[LENGTH];
 	char branch_name[4][LENGTH];
-	Tree_Node *childNode[4];
+	struct Tree_Node *childNode[4];
 	
 }Tree_Node;
 

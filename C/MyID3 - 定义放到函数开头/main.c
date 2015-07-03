@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 #include "id3.h"
-#define MEM_SIZE 10000
 
 double lg2(double n)
 {
@@ -89,7 +88,7 @@ double val_entropy(NodeSample *head)
 };
 int att_val(char branchs[][20],NodeSample *head,char *attrid)
 {
-	int X=99,i=0;
+	int X=99,i=0;;
 	NodeSample *iter=NULL;
 	if(!strcmp(attrid,"Outlook")) X=0;
 	if(!strcmp(attrid,"Temperature")) X=1;
@@ -178,7 +177,6 @@ NodeSample *pick_items(char *attrid,char *branchs,NodeSample *head)
 	NodeSample *new_head=NULL;
 	NodeSample *iter_node=NULL;
 	NodeSample *iter=NULL;
-	int i=0;
 	if(!strcmp(attrid,"Outlook")) X=0;
 	if(!strcmp(attrid,"Temperature")) X=1;
 	if(!strcmp(attrid,"Humidity")) X=2;
@@ -194,7 +192,7 @@ NodeSample *pick_items(char *attrid,char *branchs,NodeSample *head)
 		{
 			NodeSample *node=(NodeSample *)malloc(sizeof(NodeSample));
 			node->sample.number=0;
-			
+			int i=0;
 			for(i=0;i<4;i++)
 			{
 				strcpy(node->sample.item[i],iter->sample.item[i]);	
@@ -217,7 +215,6 @@ Tree_Node *ID3(NodeSample *head)
 	int i=0;
 	int loop=0;
 	int numberLoop=0;
-	int i_second=0;
 /**
 	//Initiation
 **/
@@ -254,7 +251,7 @@ Tree_Node *ID3(NodeSample *head)
 		{
 			NodeSample *new_head=pick_items(tree->root,branchs[loop],head);
 			tree_temp=ID3(new_head);
-			
+			int i_second=0;
 
 			for(i_second=0;i_second<4;i_second++)
 /**
@@ -299,9 +296,6 @@ void readDrillorTestSample(char *file)
 	FILE *stream;
 	int number=0;
 	NodeSample* iter=NULL;
-	int i=0;
-	NodeSample head;
-	NodeSample *sample=NULL;
 	stream=fopen(file,"r");
 	if(stream==NULL)
 	{
@@ -317,24 +311,25 @@ void readDrillorTestSample(char *file)
 	number=ftell(stream);
 	fseek(stream,0,SEEK_SET);	
 
-	sample=(NodeSample *)malloc(MEM_SIZE);
-
+	NodeSample head;
+	NodeSample sample[number/sizeof(head.sample)];
 	if(number/sizeof(head.sample)<=0)
 	{
 		printf("Faild to fetch data in %s.Program terminated\n",file);
 		exit(1);
 	}
 	head.next=&sample[0];
-	
+	int i=0;
 	for(i=0;i<number/sizeof(head.sample)-1;i++)
 	{
 		sample[i].next=&sample[i+1];
 	}
-	sample[number/sizeof(head.sample)-1].next=NULL;
 	
 	printf("Found %d item(s) in file %s.\n\n",number/sizeof(head.sample),file);
 
-	for(iter=head.next;iter!=NULL;iter=iter->next)
+	iter=head.next;
+	
+	for(i=0;i<number/sizeof(head.sample);i++)
 	{
 		fread(&iter->sample,sizeof(head.sample),1,stream);
 		printf("Number:%d\n",iter->sample.number);
@@ -343,6 +338,7 @@ void readDrillorTestSample(char *file)
 		printf("Humidity:%s\n",iter->sample.item[2]);
 		printf("Windy:%s\n",iter->sample.item[3]);
 		printf("Play tennis or no:%s\n\n",iter->sample.playTennis);		
+		iter=iter->next;
 	}	
 	
 
@@ -353,8 +349,6 @@ void inputDrillSample(void)
 	int number=0;
 	int i=0;
 	NodeSample* iter=NULL;
-	NodeSample head;
-	NodeSample *sample=NULL;
 	fp=fopen("drill.dat","a+");
 	if(fp==NULL)
 	{
@@ -376,11 +370,25 @@ void inputDrillSample(void)
 		exit(1);
 	}
 
-	sample=(NodeSample *)malloc(MEM_SIZE);
+	NodeSample head;
+
+	NodeSample sample[number];
+
 	head.next=&sample[0];
+/**
+//下一个版本进行输入数据的检测 
+**/
+/**
+//数据录入到内存中,并建立链表
+**/
+
 	for(i=0;i<number;i++) 
 	{
 		printf("Now you are imputing item %d :\n",i+1);
+/**
+//		printf("编号：");
+//		scanf("%d",&sample[i].sample.number); 
+**/
 		sample[i].sample.number=i+1;
 		printf("Weather(Sunny\\Overcast\\Rain)：");
 		scanf("%s",sample[i].sample.item[0]);
@@ -388,7 +396,8 @@ void inputDrillSample(void)
 		scanf("%s",sample[i].sample.item[1]);
 		printf("Humidity(High\\Normal)：");
 		scanf("%s",sample[i].sample.item[2]);
-		printf("Windy(Strong\\Weak)：");		scanf("%s",sample[i].sample.item[3]);
+		printf("Windy(Strong\\Weak)：");
+		scanf("%s",sample[i].sample.item[3]);
 		printf("Play tennis or not(Yes\\No)：");
 		scanf("%s",sample[i].sample.playTennis);
 		if(i<number-1)
@@ -396,7 +405,6 @@ void inputDrillSample(void)
 			sample[i].next=&sample[i+1];
 		}
 	}
-	sample[number/sizeof(head.sample)-1].next=NULL;
  	iter=head.next;
 	for(iter=head.next;iter!=NULL;iter=iter->next)
 	{
@@ -404,15 +412,16 @@ void inputDrillSample(void)
 	}
 	printf("All the item(s) saved.\n");
 	fclose(fp);
+/**
+	finish:
+		;
+**/
 }
 void inputTestSample(void)
 {
 	FILE * fp=NULL ;
 	int i=0;
 	NodeSample* iter=NULL;
-	int number=0;
-	NodeSample head;
-	NodeSample *sample=NULL;
 	fp=fopen("test.dat","a+");
 	if(fp==NULL)
 	{
@@ -424,7 +433,7 @@ void inputTestSample(void)
 	{
 		printf("File open successfully\n");
 	}
-	
+	int number=0;
 	printf("Please enter the number of item(s) you wanna input:\n");
 	scanf("%d",&number);
 	if(number<=0)
@@ -432,14 +441,11 @@ void inputTestSample(void)
 		printf("You input the wrong number.Program terminated\n");
 		exit(1);
 	}
-	
+	NodeSample head;
 /**
 	NodeSample sample[number];
 **/
-/**
 	NodeSample *sample=(NodeSample *)calloc(number,sizeof(NodeSample));
-**/
-	sample=(NodeSample *)malloc(MEM_SIZE);
 	head.next=&sample[0];
 /**		
 //下一个版本进行输入数据的检测 
@@ -510,16 +516,13 @@ void printResult(Tree_Node *Result,int num)
 			}
 		}
 }
-
 Tree_Node *showRules(void)
+
 {
 	FILE *stream;
 	int number=0;
 	int i=0;
 	Tree_Node *Result=NULL;
-	NodeSample* iter=NULL; 
-	NodeSample head;
-	NodeSample *sample=NULL;
 	stream=fopen("drill.dat","r");
 	if(stream==NULL)
 	{
@@ -533,10 +536,8 @@ Tree_Node *showRules(void)
 	fseek(stream,0,SEEK_SET);
 
 
-/**
+	NodeSample head;
 	NodeSample sample[number/sizeof(head.sample)];
-**/
-	sample=(NodeSample *)malloc(MEM_SIZE);
 	if(number/sizeof(head.sample)<=0)
 	{
 		printf("Faild to fetch item in drill.dat.Program terminated\n");
@@ -548,7 +549,7 @@ Tree_Node *showRules(void)
 	{
 		sample[i].next=&sample[i+1];
 	}
-	iter=head.next;
+	NodeSample* iter=head.next;
 	for(i=0;i<number/sizeof(head.sample);i++)
 	{
 		fread(&iter->sample,sizeof(head.sample),1,stream);
@@ -591,8 +592,6 @@ void showTestResult(Tree_Node *tree)
 	int i=0;
 	NodeSample* iterloop=NULL;
 	NodeSample* iter=NULL;
-	NodeSample head;
-	NodeSample *sample=NULL;
 	stream=fopen("test.dat","r");
 	if(stream==NULL)
 	{
@@ -606,11 +605,8 @@ void showTestResult(Tree_Node *tree)
 	fseek(stream,0,SEEK_SET);
 
 
-/**	
+	NodeSample head;
 	NodeSample sample[number/sizeof(head.sample)];
-**/
-
-	sample=(NodeSample *)malloc(MEM_SIZE);
 	if(number/sizeof(head.sample)<=0)
 	{
 		printf("Faild to fetch item in test.dat.Program terminated\n");
@@ -682,13 +678,12 @@ void exitProgram(void)
 	exit(1);
 }
 
-int main() 
+int main(int argc, char** argv) 
 {
 	Tree_Node *tree=NULL;
-	int choose=0;
 loop:
 	interface();
-	
+	int choose=0;
 	choose=getchar();
 	switch (choose)
 	{
